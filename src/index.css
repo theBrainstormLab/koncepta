@@ -25,13 +25,13 @@
   font-display: swap;
 }
 
+/* overall */
 body {
   background: #2b2b2e;
   color: #fafaf8;
   font-family: "Poppins-Regular";
   margin: 0;
 }
-
 a {
   font-family: "Poppins-Light";
   text-decoration: none;
@@ -41,17 +41,7 @@ a:hover {
   text-decoration: underline;
 }
 
-.title {
-  font-family: "DynaPuff";
-  text-align: center;
-  font-weight: 700;
-  font-size: 2.5rem;
-  padding-block: 7rem;
-}
-.title h1 {
-  margin: 0;
-}
-
+/* navbar */
 .nav {
   display: flex;
   justify-content: center;
@@ -60,13 +50,11 @@ a:hover {
   padding-block: 2.5rem;
   text-align: center;
 }
-
 .nav-item {
   width: 120px;
   font-size: 18px;
   letter-spacing: 10%;
 }
-
 .nav-icon {
   background: #39393d;
   width: 36px;
@@ -76,7 +64,44 @@ a:hover {
   align-items: center;
   justify-content: center;
 }
-
 .nav-icon:hover {
   cursor: pointer;
+}
+
+/* footer */
+.footer {
+  display: flex;
+  justify-content: center;
+  color: #b0b0b0;
+  position: relative;
+}
+.footer div {
+  margin-top: 40px;
+  text-align: center;
+}
+.footer a {
+  font-family: "Poppins-Bold";
+  font-size: 16px;
+  color: #b0b0b0;
+}
+.footer h6 {
+  font-family: "Poppins-Regular";
+  font-size: 16px;
+  margin: 0;
+}
+.footer img {
+  position: absolute;
+  left: 25%;
+}
+
+/* home */
+.title {
+  font-family: "DynaPuff";
+  text-align: center;
+  font-weight: 700;
+  font-size: 2.5rem;
+  padding-block: 7rem;
+}
+.title h1 {
+  margin: 0;
 }

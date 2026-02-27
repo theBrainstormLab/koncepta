@@ -1,26 +1,11 @@
-import { Icon } from "@iconify-icon/react";
+import Footer from "./components/footer";
+import Navbar from "./components/navbar";
 
 function App() {
   return (
     <>
-      <div id="home">
-        <div className="nav">
-          <a href="/" className="nav-item">
-            koncepta
-          </a>
-          <a href="/" className="nav-item">
-            about
-          </a>
-          <div className="nav-icon">
-            <Icon icon="ri:sun-line" width="22" height="22" />
-          </div>
-          <a href="/" className="nav-item">
-            notes
-          </a>
-          <a href="/" className="nav-item">
-            syllabus
-          </a>
-        </div>
+      <div id="content">
+        <Navbar />
 
         <div className="title">
           <h1>notes</h1>
@@ -28,6 +13,8 @@ function App() {
           <h1>ready</h1>
         </div>
       </div>
+
+      <Footer />
     </>
   );
 }
