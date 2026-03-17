@@ -5,6 +5,12 @@ export default function Home() {
   const [query, setQuery] = useState("");
   const [subject, setSubject] = useState("Computer science");
 
+  const courses = Array(9).fill({
+    title: "Data structures and algorithms",
+    code: "CS3716451",
+    degree: "BSc Computer science"
+  });
+
   return (
     <div className="home">
       <div className="title">
@@ -39,10 +45,26 @@ export default function Home() {
             <option value="Biology">Biology</option>
           </select>
           <span className="search-bar__chevron">
-            <Icon icon="iconamoon:arrow-down-2" />
+            <Icon icon="ri:arrow-drop-down-line" />
           </span>
         </div>
       </div>
+
+      <div className="scroll-more">scroll for more <Icon icon="ri:arrow-down-long-line" /></div>
+
+      <div className="course-grid">
+        {courses.map((course, i) => (
+          <div key={i} className="course-card">
+            <h3 className="course-title">{course.title}</h3>
+            <p className="course-code">{course.code}</p>
+            <div className="course-degree">
+              <Icon icon="ri:book-2-line" />
+              {course.degree}
+            </div>
+          </div>
+        ))}
+      </div>
+
     </div>
   )
 }
