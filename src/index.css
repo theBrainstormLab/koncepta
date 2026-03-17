@@ -26,6 +26,11 @@
 }
 
 /* overall */
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
 body {
   background: #2b2b2e;
   color: #fafaf8;
@@ -73,7 +78,7 @@ a:hover {
   display: flex;
   justify-content: center;
   color: #b0b0b0;
-  position: relative;
+  margin-top: auto;
 }
 .footer div {
   margin-top: 40px;
@@ -100,8 +105,80 @@ a:hover {
   text-align: center;
   font-weight: 700;
   font-size: 2.5rem;
-  padding-block: 7rem;
+  padding-top: 7rem;
+  padding-bottom: 1.25rem;
 }
 .title h1 {
   margin: 0;
+  text-shadow: 0px 4px 4px #fafaf826;
+}
+.subtitle {
+  font-size: 16px;
+  text-align: center;
+}
+.search-bar {
+  width: 454px;
+  height: 60px;
+  background-color: #2a2a2a;
+  border-radius: 20px;
+  display: flex;
+  padding: 0 16px;
+  margin-inline: auto;
+  border: 2px solid #FAFAF880;
+  margin-block: 4rem;
+}
+.search-bar__icon {
+  color: #FAFAF8B2;
+  font-size: 24px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+.search-bar__input {
+  background: transparent;
+  border: none;
+  font-size: 15px;
+  font-family: inherit;
+  height: min-content;
+  margin-block: auto;
+  color: inherit;
+  margin-left: 10px;
+  width: 100%;
+}
+.search-bar__input:focus {
+  outline: none;
+}
+.search-bar__input::placeholder {
+  color: #6b6b6b;
+}
+.search-bar__dropdown {
+  display: flex;
+  cursor: pointer;
+  background: #39393D;
+  height: min-content;
+  border-radius: 10px;
+  margin-block: auto;
+  padding: 5px;
+}
+.search-bar__select {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #e0e0e0;
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.search-bar__select option {
+  background-color: #2a2a2a;
+  color: #e0e0e0;
+}
+.search-bar__chevron {
+  color: #9a9a9a;
+  font-size: 16px;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
 }
