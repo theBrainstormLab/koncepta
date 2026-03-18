@@ -155,7 +155,6 @@ a:hover {
   display: flex;
   cursor: pointer;
   background: #39393D;
-  height: min-content;
   border-radius: 10px;
   margin-block: auto;
   padding: 5px;
@@ -163,20 +162,13 @@ a:hover {
 .search-bar__select {
   background: transparent;
   border: none;
-  outline: none;
-  color: #e0e0e0;
+  color: #FAFAF8;
   font-size: 14px;
   font-family: inherit;
   cursor: pointer;
   appearance: none;
-  -webkit-appearance: none;
-}
-.search-bar__select option {
-  background-color: #2a2a2a;
-  color: #e0e0e0;
 }
 .search-bar__chevron {
-  color: #9a9a9a;
   font-size: 16px;
   pointer-events: none;
   display: flex;
