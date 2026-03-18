@@ -1,3 +1,5 @@
+import { Routes, Route } from 'react-router-dom'
+
 import Footer from "./components/footer";
 import Navbar from "./components/navbar";
 import Home from "./pages/home";
@@ -6,11 +8,13 @@ function App() {
   return (
     <>
       <Navbar />
-      <div id="content">
-        <Home />
-      </div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        {/* <Route path="/about" element={<About />} /> */}
+      </Routes>
       <Footer />
     </>
+
   );
 }
 
