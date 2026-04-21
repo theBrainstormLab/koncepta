@@ -142,7 +142,7 @@ a:hover {
     gap: 1.5rem;
     padding-block: 1.5rem;
   }
-  
+
   .nav-item {
     font-size: 16px;
     width: auto;
@@ -153,11 +153,11 @@ a:hover {
   .nav {
     display: none;
   }
-  
+
   .nav-toggle {
     display: block;
   }
-  
+
   .nav-mobile {
     display: flex;
     flex-direction: column;
@@ -170,7 +170,7 @@ a:hover {
     z-index: 1000;
     min-height: 100vh;
   }
-  
+
   .nav-mobile-item {
     font-size: 20px;
     padding: 20px;
@@ -212,21 +212,21 @@ a:hover {
     flex-direction: column;
     gap: 10px;
   }
-  
+
   .footer div {
     position: relative;
   }
-  
+
   .footer img {
     position: relative;
     left: auto;
     height: 4rem;
   }
-  
+
   .footer a {
     font-size: 12px;
   }
-  
+
   .footer h6 {
     font-size: 12px;
   }
@@ -236,11 +236,11 @@ a:hover {
   .footer img {
     height: 3rem;
   }
-  
+
   .footer a {
     font-size: 10px;
   }
-  
+
   .footer h6 {
     font-size: 10px;
   }
@@ -309,7 +309,7 @@ a:hover {
   display: flex;
   padding: 0 16px;
   margin-inline: auto;
-  border: 2px solid #FAFAF880;
+  border: 2px solid #fafaf880;
   margin-block: 3rem;
   box-sizing: border-box;
 }
@@ -334,7 +334,7 @@ a:hover {
 }
 
 .search-bar__icon {
-  color: #FAFAF8B2;
+  color: #fafaf8b2;
   font-size: 24px;
   flex-shrink: 0;
   display: flex;
@@ -360,7 +360,7 @@ a:hover {
 .search-bar__dropdown {
   display: flex;
   cursor: pointer;
-  background: #39393D;
+  background: #39393d;
   border-radius: 10px;
   margin-block: auto;
   padding: 5px;
@@ -368,7 +368,7 @@ a:hover {
 .search-bar__select {
   background: transparent;
   border: none;
-  color: #FAFAF8;
+  color: #fafaf8;
   font-size: 14px;
   font-family: inherit;
   cursor: pointer;
@@ -379,20 +379,20 @@ a:hover {
   .search-bar__icon {
     font-size: 20px;
   }
-  
+
   .search-bar__input {
     font-size: 14px;
     margin-left: 8px;
   }
-  
+
   .search-bar__dropdown {
     padding: 4px;
   }
-  
+
   .search-bar__select {
     font-size: 12px;
   }
-  
+
   .search-bar__chevron {
     font-size: 14px;
   }
@@ -402,23 +402,23 @@ a:hover {
   .search-bar__icon {
     font-size: 18px;
   }
-  
+
   .search-bar__input {
     font-size: 13px;
     margin-left: 6px;
   }
-  
+
   .search-bar__dropdown {
     padding: 2px;
     border-radius: 8px;
   }
-  
+
   .search-bar__select {
     font-size: 11px;
     width: 100%;
     text-overflow: ellipsis;
   }
-  
+
   .search-bar__chevron {
     font-size: 12px;
   }
@@ -436,9 +436,9 @@ a:hover {
   align-items: center;
   justify-content: center;
   font-size: 12px;
-  color: #FAFAF880;
+  color: #fafaf880;
   margin-block: 7rem;
-  font-family: 'Poppins-Light';
+  font-family: "Poppins-Light";
 }
 
 @media (max-width: 768px) {
@@ -462,10 +462,12 @@ a:hover {
   box-sizing: border-box;
 }
 .course-card {
-  border: 1px solid #FAFAF880;
+  border: 1px solid #fafaf880;
   border-radius: 20px;
   padding: 30px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   cursor: pointer;
   box-sizing: border-box;
   width: 100%;
@@ -479,7 +481,7 @@ a:hover {
 .course-title {
   font-weight: 500;
   font-size: 14px;
-  font-family: 'Poppins-Bold';
+  font-family: "Poppins-Bold";
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
@@ -515,7 +517,7 @@ a:hover {
     padding: 50px 20px;
     gap: 1.5rem;
   }
-  
+
   .course-card {
     padding: 20px;
   }
@@ -527,7 +529,7 @@ a:hover {
     padding: 30px 10px;
     gap: 1rem;
   }
-  
+
   .course-card {
     padding: 15px;
     width: 100%;
@@ -535,23 +537,42 @@ a:hover {
     display: flex;
     flex-direction: column;
   }
-  
+
   .course-title {
     font-size: 13px;
     width: 100%;
     box-sizing: border-box;
   }
-  
+
   .course-code {
     font-size: 13px;
     width: 100%;
     box-sizing: border-box;
     word-wrap: break-word;
   }
-  
+
   .course-degree {
     font-size: 0.7rem;
     width: 100%;
     box-sizing: border-box;
   }
+}
+
+
+.notfound {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 75px;
+  text-align: center;
+}
+
+.forofor {
+  margin: 124px 0 0 0;
+  font-size: 75px;
+  font-family: DynaPuff;
+  font-weight: bold;
+  color:#fafaf8;
+  text-shadow: 0px 4px 8px rgba(79, 175, 175, 0.25);
 }
