@@ -558,21 +558,18 @@ a:hover {
   }
 }
 
-
-.notfound {
+.forofor {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 75px;
-  text-align: center;
+  margin-block: 2.5rem;
 }
 
-.forofor {
-  margin: 124px 0 0 0;
-  font-size: 75px;
+.forofor h1 {
+  font-size: 4rem;
   font-family: DynaPuff;
   font-weight: bold;
-  color:#fafaf8;
+  color: #fafaf8;
   text-shadow: 0px 4px 8px rgba(79, 175, 175, 0.25);
 }
