@@ -1,15 +1,25 @@
 import { useState } from "react";
 import { Icon } from "@iconify-icon/react";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
   const [query, setQuery] = useState("");
   const [subject, setSubject] = useState("Computer science");
+  const navigate = useNavigate();
 
-  const courses = Array(9).fill({
-    title: "Data structures and algorithms",
-    code: "CS3716451",
-    degree: "BSc Computer science"
-  });
+  const courses = Array.from({ length: 9 }, () => ({
+  title: "Data structures and algorithms",
+  code: "CS3716451",
+  degree: "BSc Computer science",
+  modules: [
+    "Arrays",
+    "Linked Lists",
+    "Stacks",
+    "Queues",
+    "Trees",
+    "Graphs"
+  ]
+}));
 
   return (
     <div className="home">
@@ -18,7 +28,8 @@ export default function Home() {
         <h1>with us, using AI</h1>
       </div>
       <div className="subtitle">
-        Get the notes you were searching everywhere for.<br />
+        Get the notes you were searching everywhere for.
+        <br />
         Understand things faster without the panic.
       </div>
 
@@ -50,11 +61,17 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="scroll-more">scroll for more <Icon icon="ri:arrow-down-long-line" /></div>
+      <div className="scroll-more">
+        scroll for more <Icon icon="ri:arrow-down-long-line" />
+      </div>
 
       <div className="course-grid">
         {courses.map((course, i) => (
-          <div key={i} className="course-card">
+          <div
+            key={i}
+            className="course-card"
+            onClick={() => navigate("/modules", { state: course })}
+          >
             <h3 className="course-title">{course.title}</h3>
             <p className="course-code">{course.code}</p>
             <div className="course-degree">
@@ -64,7 +81,6 @@ export default function Home() {
           </div>
         ))}
       </div>
-
     </div>
-  )
+  );
 }
