@@ -559,19 +559,3 @@ a:hover {
     box-sizing: border-box;
   }
 }
-
-.forofor {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-block: 2.5rem;
-}
-
-.forofor h1 {
-  font-size: 4rem;
-  font-family: DynaPuff;
-  font-weight: bold;
-  color: #fafaf8;
-  text-shadow: 0px 4px 8px rgba(79, 175, 175, 0.25);
-}
