@@ -1,25 +1,16 @@
 import { useState } from "react";
 import { Icon } from "@iconify-icon/react";
-import { useNavigate } from "react-router-dom";
 
 export default function Home() {
   const [query, setQuery] = useState("");
   const [subject, setSubject] = useState("Computer science");
-  const navigate = useNavigate();
 
-  const courses = Array.from({ length: 9 }, () => ({
-  title: "Data structures and algorithms",
-  code: "CS3716451",
-  degree: "BSc Computer science",
-  modules: [
-    "Arrays",
-    "Linked Lists",
-    "Stacks",
-    "Queues",
-    "Trees",
-    "Graphs"
-  ]
-}));
+    const courses = Array(9).fill({
+      title: "Data structures and algorithms",
+      code: "CS3716451",
+      degree: "BSc Computer science",
+    });
+
 
   return (
     <div className="home">
@@ -70,7 +61,6 @@ export default function Home() {
           <div
             key={i}
             className="course-card"
-            onClick={() => navigate("/modules", { state: course })}
           >
             <h3 className="course-title">{course.title}</h3>
             <p className="course-code">{course.code}</p>
