@@ -3,52 +3,85 @@ import { Icon } from "@iconify-icon/react";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   return (
-    <div className="nav-wrapper">
-      <div className="nav">
-        <a href="/" className="nav-item">
+    <div className="relative">
+      {/* Desktop nav -> hidden on mobile, flex from sm up */}
+      <div className="hidden sm:flex justify-center items-center gap-6 py-6 text-center md:gap-12 md:py-10">
+        <a
+          href="/"
+          className="text-base md:text-lg md:w-[120px] md:tracking-widest"
+        >
           home
         </a>
-        <a href="/" className="nav-item">
+        <a
+          href="/"
+          className="text-base md:text-lg md:w-[120px] md:tracking-widest"
+        >
           about
         </a>
-        <div className="nav-icon">
+        <div className="bg-[#39393d] w-9 h-9 rounded-[10px] flex items-center justify-center cursor-pointer">
           <Icon icon="ri:sun-line" width="22" height="22" />
         </div>
-        <a href="/" className="nav-item">
+        <a
+          href="/"
+          className="text-base md:text-lg md:w-[120px] md:tracking-widest"
+        >
           notes
         </a>
-        <a href="/" className="nav-item">
+        <a
+          href="/"
+          className="text-base md:text-lg md:w-[120px] md:tracking-widest"
+        >
           profile
         </a>
       </div>
-      
-      {/* Mobile menu button */}
-      <button className="nav-toggle" onClick={toggleMenu}>
-        <Icon icon={isMenuOpen ? "ri:close-line" : "ri:menu-line"} width="24" height="24" />
+
+      {/* Mobile toggle -> visible on mobile, hidden from sm up */}
+      <button
+        className="sm:hidden absolute top-5 right-5 z-[1001] bg-transparent border-none text-[#fafaf8] cursor-pointer p-2"
+        onClick={toggleMenu}
+      >
+        <Icon
+          icon={isMenuOpen ? "ri:close-line" : "ri:menu-line"}
+          width="24"
+          height="24"
+        />
       </button>
-      
+
       {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="nav-mobile">
-          <a href="/" className="nav-mobile-item" onClick={() => setIsMenuOpen(false)}>
+        <div className="sm:hidden flex flex-col fixed top-0 left-0 right-0 bg-[#2b2b2e] pt-20 z-[1000] min-h-screen">
+          <a
+            href="/"
+            className="block text-center px-4 py-5 text-[#fafaf8] no-underline border-b border-[#39393d] text-xl"
+            onClick={() => setIsMenuOpen(false)}
+          >
             home
           </a>
-          <a href="/" className="nav-mobile-item" onClick={() => setIsMenuOpen(false)}>
+          <a
+            href="/"
+            className="block text-center px-4 py-5 text-[#fafaf8] no-underline border-b border-[#39393d] text-xl"
+            onClick={() => setIsMenuOpen(false)}
+          >
             about
           </a>
-          <div className="nav-mobile-icon">
+          <div className="flex justify-center items-center bg-[#39393d] rounded-[10px] w-9 h-9 mx-auto my-4">
             <Icon icon="ri:sun-line" width="22" height="22" />
           </div>
-          <a href="/" className="nav-mobile-item" onClick={() => setIsMenuOpen(false)}>
+          <a
+            href="/"
+            className="block text-center px-4 py-5 text-[#fafaf8] no-underline border-b border-[#39393d] text-xl"
+            onClick={() => setIsMenuOpen(false)}
+          >
             notes
           </a>
-          <a href="/" className="nav-mobile-item" onClick={() => setIsMenuOpen(false)}>
+          <a
+            href="/"
+            className="block text-center px-4 py-5 text-[#fafaf8] no-underline border-b border-[#39393d] text-xl"
+            onClick={() => setIsMenuOpen(false)}
+          >
             profile
           </a>
         </div>
