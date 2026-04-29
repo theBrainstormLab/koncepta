@@ -156,7 +156,54 @@ export default function NoteView() {
       </div>
 
       {/* chatbot */}
-      <div className="bg-red-500">chatbot</div>
+      <div className="flex flex-col self-start w-full pt-1 my-4 pr-3">
+        <div className="flex justify-end">
+          <div className="bg-[#39393d] w-9 h-9 rounded-[10px] flex items-center justify-center cursor-pointer">
+            <Icon icon="ri:message-3-line" width="22" height="22" />
+          </div>
+        </div>
+        <div className="flex flex-col gap-6 mt-6 bg-[#39393D] rounded-[16px] p-3">
+          <div className="flex items-center gap-2">
+            <div className="bg-[#2a2a2e] w-7 h-7 rounded-full flex items-center justify-center shrink-0">
+              <Icon icon="ri:robot-2-line" width="15" height="15" />
+            </div>
+            <div>
+              <div className="bg-[#2a2a2e] rounded-2xl rounded-bl-none px-3 py-2 text-[12px] tracking-[0.03em]">
+                Okay, what confuses you..?
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 justify-end">
+            <div className="text-right">
+              <div className="bg-[#5c5c66] rounded-2xl rounded-br-none px-3 py-2 text-[12px] tracking-[0.03em]">
+                why is orange orange?
+              </div>
+            </div>
+            <div className="bg-[#2a2a2e] w-7 h-7 rounded-full flex items-center justify-center shrink-0">
+              <Icon icon="ri:user-line" width="15" height="15" />
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="bg-[#2a2a2e] w-7 h-7 rounded-full flex items-center justify-center shrink-0">
+              <Icon icon="ri:robot-2-line" width="15" height="15" />
+            </div>
+            <div>
+              <div className="bg-[#2a2a2e] rounded-2xl rounded-bl-none px-3 py-2 text-[12px] tracking-[0.03em]">
+                i don't know
+              </div>
+            </div>
+          </div>
+
+          {/* input */}
+          <div className="bg-[#2a2a2e] rounded-[12px] px-4 py-3">
+            <input
+              type="text"
+              placeholder="what's bugging you..?"
+              className="w-full bg-transparent text-[12px] tracking-[0.03em] text-[#FAFAF8BF] placeholder-[#FAFAF860] outline-none"
+            />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
