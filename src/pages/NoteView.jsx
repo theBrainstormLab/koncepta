@@ -11,8 +11,6 @@ export default function NoteView() {
   const [showOverview, setShowOverview] = useState(true);
   const [showChat, setShowChat] = useState(true);
 
-  console.log(state);
-
   return (
     <div className="flex gap-8">
       {/* overview */}
