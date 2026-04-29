@@ -9,8 +9,8 @@ function Modules() {
   const course = state;
 
   return (
-    <div className="module-page">
-      <h1 className="text-center font-['DynaPuff'] text-[36px] font-bold tracking-[1px] text-[#FAFAF8]">
+    <div className="mt-10">
+      <h1 className="text-center font-['DynaPuff'] text-[36px] font-bold tracking-[1px] text-[#FAFAF8] text-shadow-[0_4px_4px_#fafaf826]">
         {course.title}
       </h1>
 
@@ -41,7 +41,7 @@ function Modules() {
               </h3>
 
               <p className="text-[14px] mb-4 w-full box-border break-words m-0 max-[480px]:text-[13px]">
-                Module {i + 1}
+                {course.code}
               </p>
 
               <div className="flex items-center text-[0.75rem] opacity-75 w-full box-border max-[480px]:text-[0.7rem]">
