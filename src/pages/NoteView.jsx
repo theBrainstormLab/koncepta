@@ -1,4 +1,5 @@
 import { useLocation } from "react-router-dom";
+import { Icon } from "@iconify-icon/react";
 
 export default function NoteView() {
   const { state } = useLocation();
@@ -49,6 +50,14 @@ export default function NoteView() {
           hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent
           per conubia nostra inceptos himenaeos.
         </p>
+
+        <div className="text-[#FAFAF8BF] text-sm mt-20">
+          <div className="flex">
+            <Icon icon="ri:ball-pen-line" className="flex mr-1.5 items-center" />
+            <h4>Martin Scorsese</h4>
+          </div>
+          <h4>Last edited: 2d ago</h4>
+        </div>
       </div>
 
       {/* chatbot */}
