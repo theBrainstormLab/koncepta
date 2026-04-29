@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Icon } from "@iconify-icon/react";
 
 function Modules() {
   const [query, setQuery] = useState("");
 
+  const navigate = useNavigate();
   const { state } = useLocation();
   const course = state;
 
@@ -35,6 +36,7 @@ function Modules() {
             <div
               key={i}
               className="border border-[#fafaf880] rounded-[20px] p-[30px] transition duration-200 ease-in-out cursor-pointer box-border w-full flex flex-col hover:shadow-[0_10px_25px_rgba(0,0,0,0.2)] hover:-translate-y-[4px] max-md:p-5 max-[480px]:p-[15px]"
+              onClick={() => navigate("/note-view", { state: { course, i } })}
             >
               <h3 className="font-medium text-[14px] font-['Poppins-Bold'] truncate m-0 w-full box-border">
                 {mod}
