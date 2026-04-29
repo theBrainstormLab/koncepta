@@ -41,7 +41,7 @@ function Modules() {
               </h3>
 
               <p className="text-[14px] mb-4 w-full box-border break-words m-0 max-[480px]:text-[13px]">
-                Module {i + 1}
+                {course.code}
               </p>
 
               <div className="flex items-center text-[0.75rem] opacity-75 w-full box-border max-[480px]:text-[0.7rem]">
