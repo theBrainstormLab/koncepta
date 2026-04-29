@@ -11,7 +11,99 @@ export default function NoteView() {
   return (
     <div className="grid grid-cols-[1fr_3fr_1.3fr] gap-8">
       {/* overview */}
-      <div className="bg-red-500">overview</div>
+      <div className="flex flex-col gap-6 pt-1 mx-3">
+        <div className="bg-[#39393d] w-9 h-9 rounded-[10px] flex items-center justify-center cursor-pointer">
+          <Icon icon="ri:menu-4-line" width="22" height="22" />
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <h4 className="font-[DynaPuff] font-bold tracking-[0.04em] text-sm uppercase">
+            Overview of Data structures
+          </h4>
+          <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[#FAFAF899] hover:text-white">
+            <span className="shrink-0 text-[#FAFAF860] group-hover:text-white">
+              1.
+            </span>
+            <span>Data type vs Data structure</span>
+          </div>
+          <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[#FAFAF899] hover:text-white">
+            <span className="shrink-0 text-[#FAFAF860] group-hover:text-white">
+              2.
+            </span>
+            <span>Abstract Data type (ADT)</span>
+          </div>
+          <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[#FAFAF899] hover:text-white">
+            <span className="shrink-0 text-[#FAFAF860] group-hover:text-white">
+              3.
+            </span>
+            <span>Definition of Data Structure</span>
+          </div>
+          <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[#FAFAF899] hover:text-white">
+            <span className="shrink-0 text-[#FAFAF860] group-hover:text-white">
+              4.
+            </span>
+            <span>Data Structure classification...</span>
+          </div>
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <h4 className="font-[DynaPuff] font-bold tracking-[0.04em] text-sm uppercase">
+            Overview of Data structures
+          </h4>
+          <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[#FAFAF899] hover:text-white">
+            <span className="shrink-0 text-[#FAFAF860] group-hover:text-white">
+              1.
+            </span>
+            <span>Data type vs Data structure</span>
+          </div>
+          <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[#FAFAF899] hover:text-white">
+            <span className="shrink-0 text-[#FAFAF860] group-hover:text-white">
+              2.
+            </span>
+            <span>Abstract Data type (ADT)</span>
+          </div>
+          <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[#FAFAF899] hover:text-white">
+            <span className="shrink-0 text-[#FAFAF860] group-hover:text-white">
+              3.
+            </span>
+            <span>Definition of Data Structure</span>
+          </div>
+          <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[#FAFAF899] hover:text-white">
+            <span className="shrink-0 text-[#FAFAF860] group-hover:text-white">
+              4.
+            </span>
+            <span>Data Structure classification...</span>
+          </div>
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <h4 className="font-[DynaPuff] font-bold tracking-[0.04em] text-sm uppercase">
+            Overview of Data structures
+          </h4>
+          <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[#FAFAF899] hover:text-white">
+            <span className="shrink-0 text-[#FAFAF860] group-hover:text-white">
+              1.
+            </span>
+            <span>Data type vs Data structure</span>
+          </div>
+          <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[#FAFAF899] hover:text-white">
+            <span className="shrink-0 text-[#FAFAF860] group-hover:text-white">
+              2.
+            </span>
+            <span>Abstract Data type (ADT)</span>
+          </div>
+          <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[#FAFAF899] hover:text-white">
+            <span className="shrink-0 text-[#FAFAF860] group-hover:text-white">
+              3.
+            </span>
+            <span>Definition of Data Structure</span>
+          </div>
+          <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[#FAFAF899] hover:text-white">
+            <span className="shrink-0 text-[#FAFAF860] group-hover:text-white">
+              4.
+            </span>
+            <span>Data Structure classification...</span>
+          </div>
+        </div>
+      </div>
 
       {/* main contents */}
       <div className="mb-20">
@@ -53,7 +145,10 @@ export default function NoteView() {
 
         <div className="text-[#FAFAF8BF] text-sm mt-20">
           <div className="flex">
-            <Icon icon="ri:ball-pen-line" className="flex mr-1.5 items-center" />
+            <Icon
+              icon="ri:ball-pen-line"
+              className="flex mr-1.5 items-center"
+            />
             <h4>Martin Scorsese</h4>
           </div>
           <h4>Last edited: 2d ago</h4>
