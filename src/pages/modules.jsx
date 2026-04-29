@@ -9,8 +9,8 @@ function Modules() {
   const course = state;
 
   return (
-    <div className="module-page">
-      <h1 className="text-center font-['DynaPuff'] text-[36px] font-bold tracking-[1px] text-[#FAFAF8]">
+    <div className="mt-10">
+      <h1 className="text-center font-['DynaPuff'] text-[36px] font-bold tracking-[1px] text-[#FAFAF8] text-shadow-[0_4px_4px_#fafaf826]">
         {course.title}
       </h1>
 
