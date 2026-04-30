@@ -161,15 +161,27 @@ export default function NoteView() {
           per conubia nostra inceptos himenaeos.
         </p>
 
-        <div className="text-[#FAFAF8BF] text-sm mt-20">
-          <div className="flex">
-            <Icon
-              icon="ri:ball-pen-line"
-              className="flex mr-1.5 items-center"
-            />
-            <h4>Martin Scorsese</h4>
+        <div className="flex justify-between">
+          <div className="text-[#FAFAF8BF] text-sm mt-20">
+            <div className="flex">
+              <Icon
+                icon="ri:ball-pen-line"
+                className="flex mr-1.5 items-center"
+              />
+              <h4>Martin Scorsese</h4>
+            </div>
+            <h4>Last edited: 2d ago</h4>
           </div>
-          <h4>Last edited: 2d ago</h4>
+          <div className="text-[#FAFAF8BF] text-sm mt-20">
+            <div className="flex justify-end">
+              <h4 className="flex items-end">{course.code}</h4>
+              <Icon
+                icon="ri:ball-pen-line"
+                className="flex ml-1.5 items-center"
+              />
+            </div>
+            <h4>{course.degree}</h4>
+          </div>
         </div>
       </div>
 
