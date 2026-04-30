@@ -176,7 +176,7 @@ export default function NoteView() {
             <div className="flex justify-end">
               <h4 className="flex items-end">{course.code}</h4>
               <Icon
-                icon="ri:ball-pen-line"
+                icon="ri:book-2-line"
                 className="flex ml-1.5 items-center"
               />
             </div>
