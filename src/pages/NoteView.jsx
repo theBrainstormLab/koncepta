@@ -29,7 +29,7 @@ export default function NoteView() {
               animate={{ opacity: 1, width: "auto" }}
               exit={{ opacity: 0, width: 0 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="flex flex-col gap-6 overflow-hidden"
+              className="flex flex-col gap-6 overflow-hidden whitespace-nowrap"
             >
               <div className="flex flex-col gap-1.5">
                 <h4 className="font-[DynaPuff] font-bold tracking-[0.04em] text-sm uppercase">
@@ -190,7 +190,7 @@ export default function NoteView() {
               animate={{ opacity: 1, width: "auto" }}
               exit={{ opacity: 0, width: 0 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="flex flex-col gap-6 mt-6 bg-[#39393D] rounded-[16px] p-3 overflow-hidden"
+              className="flex flex-col gap-6 mt-6 bg-[#39393D] rounded-[16px] p-3 overflow-hidden whitespace-nowrap"
             >
               <div className="flex items-center gap-2">
                 <div className="bg-[#2a2a2e] w-7 h-7 rounded-full flex items-center justify-center shrink-0">
