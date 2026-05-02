@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Icon } from "@iconify-icon/react";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  const [dark, setDark] = useState(false);
+  toggleTheme(dark, setDark);
 
   return (
     <div className="relative">
@@ -21,8 +24,18 @@ export default function Navbar() {
         >
           about
         </a>
-        <div className="bg-[#39393d] w-9 h-9 rounded-[10px] flex items-center justify-center cursor-pointer">
-          <Icon icon="ri:sun-line" width="22" height="22" />
+        <div
+          className="bg-[#39393d] w-9 h-9 rounded-[10px] flex items-center justify-center cursor-pointer"
+          onClick={() => setDark(!dark)}
+        >
+          <Icon
+            icon={dark ? "ri:sun-line" : "ri:moon-line"}
+            width="22"
+            height="22"
+            className={`cursor-pointer transition-transform duration-300 ${
+              dark ? "rotate-180" : "rotate-0"
+            }`}
+          />
         </div>
         <a
           href="/"
@@ -88,4 +101,17 @@ export default function Navbar() {
       )}
     </div>
   );
+}
+
+function toggleTheme(dark, setDark) {
+  useEffect(() => {
+    // Check system preference
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      setDark(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", dark);
+  }, [dark]);
 }
