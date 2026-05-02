@@ -29,11 +29,11 @@ export default function Navbar() {
           onClick={() => setDark(!dark)}
         >
           <Icon
-            icon={dark ? "ri:sun-line" : "ri:moon-line"}
+            icon={dark ? "ri:moon-line" : "ri:sun-line"}
             width="22"
             height="22"
             className={`cursor-pointer transition-transform duration-300 ${
-              dark ? "rotate-180" : "rotate-0"
+              dark ? "rotate-0" : "rotate-180"
             }`}
           />
         </div>
@@ -80,8 +80,18 @@ export default function Navbar() {
           >
             about
           </a>
-          <div className="flex justify-center items-center bg-[#39393d] rounded-[10px] w-9 h-9 mx-auto my-4">
-            <Icon icon="ri:sun-line" width="22" height="22" />
+          <div
+            className="flex justify-center items-center bg-[#39393d] rounded-[10px] w-9 h-9 mx-auto my-4"
+            onClick={() => setDark(!dark)}
+          >
+            <Icon
+              icon={dark ? "ri:moon-line" : "ri:sun-line"}
+              width="22"
+              height="22"
+              className={`transition-transform duration-300 ${
+                dark ? "rotate-0" : "rotate-180"
+              }`}
+            />
           </div>
           <a
             href="/"
