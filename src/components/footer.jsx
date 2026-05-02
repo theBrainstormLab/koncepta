@@ -2,8 +2,8 @@ import Cat from "../../public/cat.svg?react";
 
 export default function Footer() {
   return (
-    <div className="flex flex-col justify-center items-center text-[var(--color-text-footer)] mt-auto relative py-5 gap-[10px] md:flex-row md:gap-0">
-      <Cat className="h-12 sm:h-16 md:h-24 md:absolute md:left-1/4" />
+    <div className="flex flex-col justify-center items-center text-[var(--color-text-footer)] mt-auto relative gap-[10px] md:flex-row md:gap-0">
+      <Cat className="h-12 sm:h-16 md:h-24 absolute md:left-1/5 left-1/8" />
       <div className="relative text-center z-[1]">
         <a
           href="https://github.com/theBrainstormLab"
