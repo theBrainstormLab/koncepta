@@ -5,8 +5,14 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
-  const [dark, setDark] = useState(false);
-  toggleTheme(dark, setDark);
+  const [dark, setDark] = useState(true);
+  useEffect(() => {
+    if (dark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [dark]);
 
   return (
     <div className="relative">
@@ -111,17 +117,4 @@ export default function Navbar() {
       )}
     </div>
   );
-}
-
-function toggleTheme(dark, setDark) {
-  useEffect(() => {
-    // Check system preference
-    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      setDark(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", dark);
-  }, [dark]);
 }
