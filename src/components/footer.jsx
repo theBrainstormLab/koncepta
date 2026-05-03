@@ -1,4 +1,4 @@
-import Cat from "../../public/cat.svg?react";
+import Cat from "../assets/cat.svg?react";
 
 export default function Footer() {
   return (
