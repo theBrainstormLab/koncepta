@@ -35,20 +35,20 @@ export default function NoteView() {
                 <h4 className="font-[DynaPuff] font-bold tracking-[0.04em] text-sm uppercase truncate">
                   Overview of Data structures
                 </h4>
-                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-white min-w-0">
-                  <span className="shrink-0 group-hover:text-white">1.</span>
+                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-[var(--color-text)] min-w-0">
+                  <span className="shrink-0">1.</span>
                   <span className="truncate">Data type vs Data structure</span>
                 </div>
-                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-white min-w-0">
-                  <span className="shrink-0 group-hover:text-white">2.</span>
+                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-[var(--color-text)] min-w-0">
+                  <span className="shrink-0">2.</span>
                   <span className="truncate">Abstract Data type (ADT)</span>
                 </div>
-                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-white min-w-0">
-                  <span className="shrink-0 group-hover:text-white">3.</span>
+                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-[var(--color-text)] min-w-0">
+                  <span className="shrink-0">3.</span>
                   <span className="truncate">Definition of Data Structure</span>
                 </div>
-                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-white min-w-0">
-                  <span className="shrink-0 group-hover:text-white">4.</span>
+                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-[var(--color-text)] min-w-0">
+                  <span className="shrink-0">4.</span>
                   <span className="truncate">
                     Data Structure classification...
                   </span>
@@ -58,20 +58,20 @@ export default function NoteView() {
                 <h4 className="font-[DynaPuff] font-bold tracking-[0.04em] text-sm uppercase truncate">
                   Overview of Data structures
                 </h4>
-                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-white min-w-0">
-                  <span className="shrink-0 group-hover:text-white">1.</span>
+                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-[var(--color-text)] min-w-0">
+                  <span className="shrink-0">1.</span>
                   <span className="truncate">Data type vs Data structure</span>
                 </div>
-                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-white min-w-0">
-                  <span className="shrink-0 group-hover:text-white">2.</span>
+                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-[var(--color-text)] min-w-0">
+                  <span className="shrink-0">2.</span>
                   <span className="truncate">Abstract Data type (ADT)</span>
                 </div>
-                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-white min-w-0">
-                  <span className="shrink-0 group-hover:text-white">3.</span>
+                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-[var(--color-text)] min-w-0">
+                  <span className="shrink-0">3.</span>
                   <span className="truncate">Definition of Data Structure</span>
                 </div>
-                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-white min-w-0">
-                  <span className="shrink-0 group-hover:text-white">4.</span>
+                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-[var(--color-text)] min-w-0">
+                  <span className="shrink-0">4.</span>
                   <span className="truncate">
                     Data Structure classification...
                   </span>
@@ -81,20 +81,20 @@ export default function NoteView() {
                 <h4 className="font-[DynaPuff] font-bold tracking-[0.04em] text-sm uppercase truncate">
                   Overview of Data structures
                 </h4>
-                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-white min-w-0">
-                  <span className="shrink-0 group-hover:text-white">1.</span>
+                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-[var(--color-text)] min-w-0">
+                  <span className="shrink-0">1.</span>
                   <span className="truncate">Data type vs Data structure</span>
                 </div>
-                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-white min-w-0">
-                  <span className="shrink-0 group-hover:text-white">2.</span>
+                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-[var(--color-text)] min-w-0">
+                  <span className="shrink-0">2.</span>
                   <span className="truncate">Abstract Data type (ADT)</span>
                 </div>
-                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-white min-w-0">
-                  <span className="shrink-0 group-hover:text-white">3.</span>
+                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-[var(--color-text)] min-w-0">
+                  <span className="shrink-0">3.</span>
                   <span className="truncate">Definition of Data Structure</span>
                 </div>
-                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-white min-w-0">
-                  <span className="shrink-0 group-hover:text-white">4.</span>
+                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-[var(--color-text)] min-w-0">
+                  <span className="shrink-0">4.</span>
                   <span className="truncate">
                     Data Structure classification...
                   </span>
