@@ -39,6 +39,8 @@
   --shadow-text: 0 4px 4px #2b2b2e26;
   --shadow-box-hover: 0 10px 25px #2b2b2e33;
   --color-border: #2b2b2e80;
+  --svg-logo-arc: #b0b0b0;
+  --svg-logo-streak: #39393d;
 }
 
 .dark {
@@ -52,6 +54,8 @@
   --shadow-text: 0 4px 4px #fafaf826;
   --shadow-box-hover: 0 10px 25px #00000033;
   --color-border: #fafaf880;
+  --svg-logo-arc: #fafaf8;
+  --svg-logo-streak: #fafaf8;
 }
 
 /* overall */
