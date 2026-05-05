@@ -18,7 +18,7 @@ function About() {
     },
   ];
   return (
-    <div className="h-[calc(100svh-200px)] overflow-y-scroll snap-y snap-mandatory  mt-[50px] md:mt-[0px] lg:pt-[0px]">
+    <div className="h-[calc(100svh-130px)] md:h-[calc(100svh-200px)] lg:h-[calc(100svh-200px)] overflow-y-scroll snap-y snap-mandatory mb-0 mt-0">
       {aboutData.map((section, index) => (
         <div
           key={index}

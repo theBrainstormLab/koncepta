@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <div className="flex flex-col justify-center items-center text-[#b0b0b0] mt-auto relative py-5 gap-[10px] md:flex-row md:gap-0">
+    <div className="bg-transparent flex flex-col justify-center items-center text-[#b0b0b0] mt-auto relative py-5 gap-[10px] md:flex-row md:gap-0">
       <img
         src="./cat.svg"
         alt="cat"
