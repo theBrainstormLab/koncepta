@@ -61,7 +61,7 @@ export default function Navbar() {
             home
           </a>
           <a
-            href="/"
+            href="/about"
             className="block text-center px-4 py-5 text-[#fafaf8] no-underline border-b border-[#39393d] text-xl"
             onClick={() => setIsMenuOpen(false)}
           >
