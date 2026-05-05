@@ -18,14 +18,14 @@ function About() {
     },
   ];
   return (
-    <div className="h-[calc(100svh-200px)] overflow-y-scroll snap-y snap-mandatory  mt-[50px] md:mt-[0px] lg:pt-[0px] bg-yellow-500">
+    <div className="h-[calc(100svh-200px)] overflow-y-scroll snap-y snap-mandatory  mt-[50px] md:mt-[0px] lg:pt-[0px]">
       {aboutData.map((section, index) => (
         <div
           key={index}
           className="h-full flex items-center justify-center snap-start px-4"
         >
           <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-[88px] max-w-5xl">
-            <h1 className="font-[DynaPuff] font-bold text-[36px]  bg-green-500 lg-w-[407px] text-center lg:text-left">
+            <h1 className="font-[DynaPuff] font-bold text-[36px] lg-w-[407px] text-center lg:text-left">
               {section.title}
             </h1>
 
