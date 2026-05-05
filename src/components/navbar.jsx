@@ -16,7 +16,7 @@ export default function Navbar() {
           home
         </a>
         <a
-          href="/"
+          href="/about"
           className="text-base md:text-lg md:w-[120px] md:tracking-widest"
         >
           about
