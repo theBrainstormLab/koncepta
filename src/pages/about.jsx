@@ -18,22 +18,25 @@ function About() {
     },
   ];
   return (
-    <div className="h-[calc(100svh-200px)] overflow-y-scroll snap-y snap-mandatory no-scrollbar">
+    <div className="h-[calc(100svh-200px)] overflow-y-scroll snap-y snap-mandatory  mt-[50px] md:mt-[0px] lg:pt-[0px] bg-yellow-500">
       {aboutData.map((section, index) => (
         <div
           key={index}
-          className="h-full flex items-center justify-center snap-start"
+          className="h-full flex items-center justify-center snap-start px-4"
         >
-          <div className="flex flex-col flex-row items-center gap-[88px]">
-            <h1 className="font-[DynaPuff] font-bold w-[407px] text-[36px] text-left text-shadow-[0_4px_4px_#fafaf826]">
+          <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-[88px] max-w-5xl">
+            <h1 className="font-[DynaPuff] font-bold text-[36px]  bg-green-500 lg-w-[407px] text-center lg:text-left">
               {section.title}
             </h1>
 
-            <p className="w-[565px] text-[18px] text-left">{section.text}</p>
+            <p className="text-base text-[18px] max-w-[565px] text-center lg:text-left">
+              {section.text}
+            </p>
           </div>
         </div>
       ))}
     </div>
   );
 }
+
 export default About;
