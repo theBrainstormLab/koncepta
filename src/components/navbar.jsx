@@ -25,7 +25,7 @@ export default function Navbar() {
           home
         </a>
         <a
-          href="/"
+          href="/about"
           className="text-base md:text-lg md:w-[120px] md:tracking-widest"
         >
           about
@@ -80,7 +80,7 @@ export default function Navbar() {
             home
           </a>
           <a
-            href="/"
+            href="/about"
             className="block text-center px-4 py-5 no-underline text-xl"
             onClick={() => setIsMenuOpen(false)}
           >
