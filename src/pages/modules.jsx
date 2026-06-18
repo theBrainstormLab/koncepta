@@ -30,7 +30,7 @@ function Modules() {
       </div>
 
       <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] p-[100px] gap-10 box-border max-md:px-5 max-md:py-[50px] max-md:gap-6 max-[480px]:grid-cols-1 max-[480px]:px-[10px] max-[480px]:py-[30px] max-[480px]:gap-4">
-        {course.modules
+        {/* {course.modules
           .filter((mod) => mod.toLowerCase().includes(query.toLowerCase()))
           .map((mod, i) => (
             <div
@@ -51,7 +51,7 @@ function Modules() {
                 {course.title}
               </div>
             </div>
-          ))}
+          ))} */}
       </div>
     </div>
   );
