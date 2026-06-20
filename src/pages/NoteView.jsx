@@ -1,15 +1,56 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Icon } from "@iconify-icon/react";
 import { motion, AnimatePresence } from "framer-motion";
+import { supabase } from "../utils/supabase";
 
 export default function NoteView() {
   const { state } = useLocation();
-  const course = state.course;
-  const index = state.i;
+  const { course, module } = state;
 
+  const [notes, setNotes] = useState([]);
+  const [selectedNote, setSelectedNote] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [showOverview, setShowOverview] = useState(true);
   const [showChat, setShowChat] = useState(true);
+
+  useEffect(() => {
+    async function fetchNotes() {
+      try {
+        const { data, error } = await supabase
+          .from("notes")
+          .select(
+            `
+            id,
+            title,
+            content,
+            created_at,
+            updated_at,
+            author:users!notes_author_id_fkey(username)
+          `,
+          )
+          .eq("module_id", module.id);
+
+        if (error) throw error;
+        setNotes(data);
+        if (data.length > 0) setSelectedNote(data[0]);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchNotes();
+  }, [module.id]);
+
+  const formatDate = (iso) => {
+    const diff = Date.now() - new Date(iso).getTime();
+    const days = Math.floor(diff / 86400000);
+    if (days === 0) return "today";
+    if (days === 1) return "1d ago";
+    return `${days}d ago`;
+  };
 
   return (
     <div className="flex gap-8">
@@ -31,140 +72,74 @@ export default function NoteView() {
               transition={{ duration: 0.3, ease: "easeInOut" }}
               className="flex flex-col gap-6 overflow-hidden whitespace-nowrap"
             >
-              <div className="flex flex-col gap-1.5">
-                <h4 className="font-[DynaPuff] font-bold tracking-[0.04em] text-sm uppercase truncate">
-                  Overview of Data structures
-                </h4>
-                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-[var(--color-text)] min-w-0">
-                  <span className="shrink-0">1.</span>
-                  <span className="truncate">Data type vs Data structure</span>
+              {!loading && (
+                <div className="flex flex-col gap-1.5">
+                  <h4 className="font-[DynaPuff] font-bold tracking-[0.04em] text-sm uppercase truncate">
+                    {module.title}
+                  </h4>
+                  {notes.map((note, i) => (
+                    <div
+                      key={note.id}
+                      onClick={() => setSelectedNote(note)}
+                      className={`group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md min-w-0 transition-colors ${
+                        selectedNote?.id === note.id
+                          ? "text-[var(--color-text)]"
+                          : "text-[var(--color-text-secondary)] hover:text-[var(--color-text)]"
+                      }`}
+                    >
+                      <span className="shrink-0">{i + 1}.</span>
+                      <span className="truncate">{note.title}</span>
+                    </div>
+                  ))}
                 </div>
-                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-[var(--color-text)] min-w-0">
-                  <span className="shrink-0">2.</span>
-                  <span className="truncate">Abstract Data type (ADT)</span>
-                </div>
-                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-[var(--color-text)] min-w-0">
-                  <span className="shrink-0">3.</span>
-                  <span className="truncate">Definition of Data Structure</span>
-                </div>
-                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-[var(--color-text)] min-w-0">
-                  <span className="shrink-0">4.</span>
-                  <span className="truncate">
-                    Data Structure classification...
-                  </span>
-                </div>
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <h4 className="font-[DynaPuff] font-bold tracking-[0.04em] text-sm uppercase truncate">
-                  Overview of Data structures
-                </h4>
-                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-[var(--color-text)] min-w-0">
-                  <span className="shrink-0">1.</span>
-                  <span className="truncate">Data type vs Data structure</span>
-                </div>
-                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-[var(--color-text)] min-w-0">
-                  <span className="shrink-0">2.</span>
-                  <span className="truncate">Abstract Data type (ADT)</span>
-                </div>
-                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-[var(--color-text)] min-w-0">
-                  <span className="shrink-0">3.</span>
-                  <span className="truncate">Definition of Data Structure</span>
-                </div>
-                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-[var(--color-text)] min-w-0">
-                  <span className="shrink-0">4.</span>
-                  <span className="truncate">
-                    Data Structure classification...
-                  </span>
-                </div>
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <h4 className="font-[DynaPuff] font-bold tracking-[0.04em] text-sm uppercase truncate">
-                  Overview of Data structures
-                </h4>
-                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-[var(--color-text)] min-w-0">
-                  <span className="shrink-0">1.</span>
-                  <span className="truncate">Data type vs Data structure</span>
-                </div>
-                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-[var(--color-text)] min-w-0">
-                  <span className="shrink-0">2.</span>
-                  <span className="truncate">Abstract Data type (ADT)</span>
-                </div>
-                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-[var(--color-text)] min-w-0">
-                  <span className="shrink-0">3.</span>
-                  <span className="truncate">Definition of Data Structure</span>
-                </div>
-                <div className="group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md text-[var(--color-text-secondary)] hover:text-[var(--color-text)] min-w-0">
-                  <span className="shrink-0">4.</span>
-                  <span className="truncate">
-                    Data Structure classification...
-                  </span>
-                </div>
-              </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
       </div>
 
-      {/* main contents */}
+      {/* main content */}
       <div className="flex-1 mb-20">
-        <h1 className="font-[DynaPuff] font-bold text-shadow-[var(--shadow-text)] text-4xl tracking-[0.05em]">
-          {course.modules[index]}
-        </h1>
+        {loading ? (
+          <p>Loading...</p>
+        ) : !selectedNote ? (
+          <p className="opacity-50">No notes yet.</p>
+        ) : (
+          <>
+            <h1 className="font-[DynaPuff] font-bold text-shadow-[var(--shadow-text)] text-4xl tracking-[0.05em]">
+              {selectedNote.title}
+            </h1>
 
-        <div className="h-px bg-[var(--color-text)] opacity-15 mt-1"></div>
+            <div className="h-px bg-[var(--color-text)] opacity-15 mt-1"></div>
 
-        <h3 className="tracking-[0.05em] text-2xl my-3">Overview</h3>
-
-        <p className="tracking-[0.03em] my-3">
-          Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque
-          faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi
-          pretium tellus duis convallis. Tempus leo eu aenean sed diam urna
-          tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas.
-          Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut
-          hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent
-          per conubia nostra inceptos himenaeos.
-        </p>
-        <p className="tracking-[0.03em] my-3">
-          Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque
-          faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi
-          pretium tellus duis convallis. Tempus leo eu aenean sed diam urna
-          tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas.
-          Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut
-          hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent
-          per conubia nostra inceptos himenaeos.
-        </p>
-        <p className="tracking-[0.03em] my-3">
-          Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque
-          faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi
-          pretium tellus duis convallis. Tempus leo eu aenean sed diam urna
-          tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas.
-          Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut
-          hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent
-          per conubia nostra inceptos himenaeos.
-        </p>
-
-        <div className="flex justify-between">
-          <div className="text-[var(--color-text)] opacity-75 text-sm mt-20">
-            <div className="flex">
-              <Icon
-                icon="ri:ball-pen-line"
-                className="flex mr-1.5 items-center"
-              />
-              <h4>Martin Scorsese</h4>
+            <div className="tracking-[0.03em] my-3 whitespace-pre-wrap">
+              {selectedNote.content}
             </div>
-            <h4>Last edited: 2d ago</h4>
-          </div>
-          <div className="text-[var(--color-text)] opacity-75 text-sm mt-20">
-            <div className="flex justify-end">
-              <h4 className="flex items-end">{course.code}</h4>
-              <Icon
-                icon="ri:book-2-line"
-                className="flex ml-1.5 items-center"
-              />
+
+            <div className="flex justify-between">
+              <div className="text-[var(--color-text)] opacity-75 text-sm mt-20">
+                <div className="flex">
+                  <Icon
+                    icon="ri:ball-pen-line"
+                    className="flex mr-1.5 items-center"
+                  />
+                  <h4>{selectedNote.author?.username ?? "Unknown"}</h4>
+                </div>
+                <h4>Last edited: {formatDate(selectedNote.updated_at)}</h4>
+              </div>
+              <div className="text-[var(--color-text)] opacity-75 text-sm mt-20">
+                <div className="flex justify-end">
+                  <h4 className="flex items-end">{course.code}</h4>
+                  <Icon
+                    icon="ri:book-2-line"
+                    className="flex ml-1.5 items-center"
+                  />
+                </div>
+                <h4>{course.degree?.name}</h4>
+              </div>
             </div>
-            <h4>{course.degree}</h4>
-          </div>
-        </div>
+          </>
+        )}
       </div>
 
       {/* chatbot */}
