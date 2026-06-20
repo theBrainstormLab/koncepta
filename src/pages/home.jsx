@@ -1,18 +1,38 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Icon } from "@iconify-icon/react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../utils/supabase";
 
 export default function Home() {
   const [query, setQuery] = useState("");
   const [subject, setSubject] = useState("Computer science");
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const navigate = useNavigate();
 
-  const courses = Array.from({ length: 9 }, () => ({
-    title: "Data structures and algorithms",
-    code: "CS3716451",
-    degree: "BSc Computer science",
-    modules: ["Arrays", "Linked Lists", "Stacks", "Queues", "Trees", "Graphs"],
-  }));
+  useEffect(() => {
+    async function fetchCourses() {
+      try {
+        const { data, error } = await supabase.from("courses").select(`
+            id,
+            title,
+            code,
+            degree:degrees(name)
+          `);
+
+        if (error) throw error;
+
+        setCourses(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchCourses();
+  }, []);
 
   return (
     <div>
@@ -58,26 +78,32 @@ export default function Home() {
         scroll for more <Icon icon="ri:arrow-down-long-line" />
       </div>
 
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] p-[100px] gap-10 box-border max-md:px-5 max-md:py-[50px] max-md:gap-6 max-[480px]:grid-cols-1 max-[480px]:px-[10px] max-[480px]:py-[30px] max-[480px]:gap-4">
-        {courses.map((course, i) => (
-          <div
-            key={i}
-            className="border border-[var(--color-border)] rounded-[20px] p-[30px] transition duration-200 ease-in-out cursor-pointer box-border w-full flex flex-col hover:shadow-[var(--shadow-box-hover)] hover:-translate-y-[4px] max-md:p-5 max-[480px]:p-[15px]"
-            onClick={() => navigate("/modules", { state: course })}
-          >
-            <h3 className="font-medium text-[14px] font-['Poppins-Bold'] truncate m-0 w-full box-border shrink">
-              {course.title}
-            </h3>
-            <p className="text-[14px] mb-4 w-full box-border break-words m-0 max-[480px]:text-[13px]">
-              {course.code}
-            </p>
-            <div className="flex items-center text-[0.75rem] opacity-75 w-full box-border max-[480px]:text-[0.7rem]">
-              <Icon icon="ri:book-2-line" className="mr-[7px]" />
-              {course.degree}
+      {loading ? (
+        <p className="text-center">Loading...</p>
+      ) : (
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] p-[100px] gap-10 box-border max-md:px-5 max-md:py-[50px] max-md:gap-6 max-[480px]:grid-cols-1 max-[480px]:px-[10px] max-[480px]:py-[30px] max-[480px]:gap-4">
+          {courses.map((course) => (
+            <div
+              key={course.id}
+              className="border border-[var(--color-border)] rounded-[20px] p-[30px] transition duration-200 ease-in-out cursor-pointer box-border w-full flex flex-col hover:shadow-[var(--shadow-box-hover)] hover:-translate-y-[4px] max-md:p-5 max-[480px]:p-[15px]"
+              onClick={() => navigate("/modules", { state: course })}
+            >
+              <h3 className="font-medium text-[14px] font-['Poppins-Bold'] truncate m-0 w-full box-border shrink">
+                {course.title}
+              </h3>
+
+              <p className="text-[14px] mb-4 w-full box-border break-words m-0 max-[480px]:text-[13px]">
+                {course.code}
+              </p>
+
+              <div className="flex items-center text-[0.75rem] opacity-75 w-full box-border max-[480px]:text-[0.7rem]">
+                <Icon icon="ri:book-2-line" className="mr-[7px]" />
+                {course.degree?.name}
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
