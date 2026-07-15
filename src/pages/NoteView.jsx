@@ -3,6 +3,9 @@ import { useLocation } from "react-router-dom";
 import { Icon } from "@iconify-icon/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../utils/supabase";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+
 
 export default function NoteView() {
   const { state } = useLocation();
@@ -112,8 +115,10 @@ export default function NoteView() {
 
             <div className="h-px bg-[var(--color-text)] opacity-15 mt-1"></div>
 
-            <div className="tracking-[0.03em] my-3 whitespace-pre-wrap">
-              {selectedNote.content}
+            <div className="tracking-[0.03em] my-3 prose prose-invert max-w-none">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {selectedNote.content}
+              </ReactMarkdown>
             </div>
 
             <div className="flex justify-between">
