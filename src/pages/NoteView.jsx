@@ -1,11 +1,68 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { Icon } from "@iconify-icon/react";
 import { motion, AnimatePresence } from "framer-motion";
-import { supabase } from "../utils/supabase";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import mermaid from "mermaid";
+import { supabase } from "../utils/supabase";
 
+const getCssVar = (varName, fallback) => {
+  if (typeof window === "undefined") return fallback;
+  return (
+    getComputedStyle(document.documentElement)
+      .getPropertyValue(varName)
+      .trim() || fallback
+  );
+};
+
+function Mermaid({ chart }) {
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (containerRef.current && chart) {
+      const textColor = getCssVar("--color-text", "#000000");
+      const bgSecondary = getCssVar("--color-bg-secondary", "#f0f0f0");
+
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: "base",
+        securityLevel: "loose",
+        themeVariables: {
+          textColor: textColor,
+          primaryTextColor: textColor,
+          lineColor: textColor,
+          transitionColor: textColor,
+          arrowheadColor: textColor,
+          primaryColor: bgSecondary,
+          primaryBorderColor: textColor,
+          nodeBorder: textColor,
+          clusterBkg: bgSecondary,
+          clusterBorder: textColor,
+        },
+      });
+
+      const id = `mermaid-${Math.random().toString(36).substring(2, 9)}`;
+      mermaid
+        .render(id, chart)
+        .then(({ svg }) => {
+          if (containerRef.current) {
+            containerRef.current.innerHTML = svg;
+          }
+        })
+        .catch((err) => {
+          console.error("Mermaid Render Error:", err);
+        });
+    }
+  }, [chart]);
+
+  return (
+    <div
+      ref={containerRef}
+      className="my-6 flex justify-center overflow-x-auto"
+    />
+  );
+}
 
 export default function NoteView() {
   const { state } = useLocation();
@@ -158,15 +215,30 @@ export default function NoteView() {
 
             <div className="h-px bg-[var(--color-text)] opacity-15 mt-1"></div>
 
+            {/* Note Markdown container dynamically bound to theme text color */}
+            <div className="tracking-[0.03em] my-3 break-words leading-relaxed text-sm md:text-base prose max-w-none text-[var(--color-text)] prose-headings:text-[var(--color-text)] prose-strong:text-[var(--color-text)]">
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  code({ inline, className, children, ...props }) {
+                    const match = /language-(\w+)/.exec(className || "");
+                    const isMermaid =
+                      !inline && match && match[1] === "mermaid";
 
-            <div className="tracking-[0.03em] my-3 prose prose-invert max-w-none">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    if (isMermaid) {
+                      return <Mermaid chart={String(children).trim()} />;
+                    }
+
+                    return (
+                      <code className={className} {...props}>
+                        {children}
+                      </code>
+                    );
+                  },
+                }}
+              >
                 {selectedNote.content}
               </ReactMarkdown>
-
-            <div className="tracking-[0.03em] my-3 whitespace-pre-wrap break-words leading-relaxed text-sm md:text-base">
-              {selectedNote.content}
-
             </div>
 
             <div className="flex flex-col sm:flex-row justify-between gap-4 mt-12 md:mt-20 pt-4 border-t border-black/5">
