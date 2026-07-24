@@ -70,29 +70,52 @@ export default function NoteView() {
               animate={{ opacity: 1, width: 192 }}
               exit={{ opacity: 0, width: 0 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="flex flex-col gap-6 overflow-hidden whitespace-nowrap"
+              className="overflow-hidden"
             >
-              {!loading && (
-                <div className="flex flex-col gap-1.5">
-                  <h4 className="font-[DynaPuff] font-bold tracking-[0.04em] text-sm uppercase truncate">
-                    {module.title}
-                  </h4>
-                  {notes.map((note, i) => (
-                    <div
-                      key={note.id}
-                      onClick={() => setSelectedNote(note)}
-                      className={`group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md min-w-0 transition-colors ${
-                        selectedNote?.id === note.id
-                          ? "text-[var(--color-text)]"
-                          : "text-[var(--color-text-secondary)] hover:text-[var(--color-text)]"
-                      }`}
-                    >
-                      <span className="shrink-0">{i + 1}.</span>
-                      <span className="truncate">{note.title}</span>
+              {!loading &&
+                selectedNote &&
+                (() => {
+                  const sections = [];
+                  let current = null;
+
+                  selectedNote.content.split("\n").forEach((line) => {
+                    const trimmed = line.trim();
+
+                    if (
+                      trimmed.startsWith("# ") &&
+                      !trimmed.startsWith("## ")
+                    ) {
+                      current = {
+                        title: trimmed.slice(2),
+                        items: [],
+                      };
+                      sections.push(current);
+                    } else if (trimmed.startsWith("## ") && current) {
+                      current.items.push(trimmed.slice(3));
+                    }
+                  });
+
+                  return (
+                    <div className="flex flex-col gap-3 whitespace-nowrap">
+                      {sections.map((section, sIndex) => (
+                        <div key={sIndex} className="flex flex-col">
+                          <h4 className="font-[DynaPuff] font-bold text-[15px] leading-none mb-1 truncate text-[var(--color-text)] hover:text-[var(--color-text-secondary)] transition-colors cursor-pointer">
+                            {section.title}
+                          </h4>
+
+                          {section.items.map((item, i) => (
+                            <div
+                              key={i}
+                              className="text-[12px] leading-6 text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-colors cursor-pointer truncate ml-3"
+                            >
+                              {item}
+                            </div>
+                          ))}
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              )}
+                  );
+                })()}
             </motion.div>
           )}
         </AnimatePresence>
