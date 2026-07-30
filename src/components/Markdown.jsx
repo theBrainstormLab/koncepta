@@ -1,0 +1,106 @@
+import { memo, useEffect, useRef } from "react";
+import ReactMarkdown from "react-markdown";
+import mermaid from "mermaid";
+
+mermaid.initialize({
+  startOnLoad: false,
+  theme: "base",
+  flowchart: {
+    useMaxWidth: true,
+    htmlLabels: false,
+  },
+  themeVariables: {
+    fontFamily: "inherit",
+    fontSize: "14px",
+    background: "transparent",
+    primaryColor: "#2f2f34",
+    primaryBorderColor: "#8f8f95",
+    primaryTextColor: "#f5f5f5",
+    lineColor: "#8f8f95",
+    clusterBkg: "transparent",
+    clusterBorder: "#8f8f95",
+  },
+});
+
+function Mermaid({ chart }) {
+  const containerRef = useRef(null);
+  const idRef = useRef(`mermaid-${crypto.randomUUID()}`);
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function renderDiagram() {
+      try {
+        const { svg } = await mermaid.render(idRef.current, chart.trim());
+        if (!mounted || !containerRef.current) return;
+
+        containerRef.current.innerHTML = svg;
+        const svgEl = containerRef.current.querySelector("svg");
+
+        if (svgEl) {
+          const { width } = svgEl.viewBox.baseVal;
+          svgEl.style.width = width > 900 ? "700px" : "100%";
+          svgEl.style.maxWidth = "100%";
+          svgEl.style.height = "auto";
+          svgEl.style.display = "block";
+          svgEl.style.margin = "0 auto";
+        }
+      } catch {
+        if (containerRef.current) {
+          containerRef.current.innerHTML = "<p>Invalid Mermaid diagram.</p>";
+        }
+      }
+    }
+
+    renderDiagram();
+    return () => {
+      mounted = false;
+    };
+  }, [chart]);
+
+  return (
+    <div className="my-6 flex justify-center overflow-x-auto">
+      <div ref={containerRef} />
+    </div>
+  );
+}
+
+const components = {
+  h1: ({ children }) => (
+    <h1 className="font-bold text-3xl mt-10 mb-3 tracking-[0.03em]">
+      {children}
+    </h1>
+  ),
+  h2: ({ children }) => (
+    <h2 className="font-bold text-2xl mt-8 mb-2 tracking-[0.03em]">
+      {children}
+    </h2>
+  ),
+  p: ({ children }) => (
+    <p className="my-2 leading-7 tracking-[0.03em]">{children}</p>
+  ),
+  ul: ({ children }) => (
+    <ul className="list-disc ml-6 my-3 space-y-1">{children}</ul>
+  ),
+  ol: ({ children }) => (
+    <ol className="list-decimal ml-6 my-3 space-y-1">{children}</ol>
+  ),
+  strong: ({ children }) => <strong className="font-bold">{children}</strong>,
+  em: ({ children }) => <em className="italic">{children}</em>,
+  code({ className, children }) {
+    if (className === "language-mermaid")
+      return <Mermaid chart={String(children)} />;
+    return (
+      <code className="bg-[var(--color-bg-secondary)] px-1.5 py-0.5 rounded">
+        {children}
+      </code>
+    );
+  },
+  pre: ({ children }) => <>{children}</>,
+};
+
+function MarkdownRenderer({ children }) {
+  return <ReactMarkdown components={components}>{children}</ReactMarkdown>;
+}
+
+export default memo(MarkdownRenderer);
