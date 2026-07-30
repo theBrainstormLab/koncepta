@@ -36,15 +36,22 @@ function Mermaid({ chart }) {
 
         containerRef.current.innerHTML = svg;
         const svgEl = containerRef.current.querySelector("svg");
+        if (!svgEl) return;
 
-        if (svgEl) {
-          const { width } = svgEl.viewBox.baseVal;
-          svgEl.style.width = width > 900 ? "700px" : "100%";
-          svgEl.style.maxWidth = "100%";
-          svgEl.style.height = "auto";
-          svgEl.style.display = "block";
-          svgEl.style.margin = "0 auto";
-        }
+        const MIN_WIDTH = 300;
+        const MAX_WIDTH = 900;
+
+        const { width, height } = svgEl.viewBox.baseVal;
+        const isTallDiagram = width / height < 1;
+        const clampedWidth = Math.min(Math.max(width, MIN_WIDTH), MAX_WIDTH);
+
+        Object.assign(svgEl.style, {
+          width: `${isTallDiagram ? width : clampedWidth}px`,
+          maxWidth: "100%",
+          height: "auto",
+          display: "block",
+          margin: "0 auto",
+        });
       } catch {
         if (containerRef.current) {
           containerRef.current.innerHTML = "<p>Invalid Mermaid diagram.</p>";
