@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Icon } from "@iconify-icon/react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../utils/supabase";
+import CardSkeleton from "../components/CardSkeleton";
+import CardGrid from "../components/CardGrid";
 
 export default function Home() {
   const [query, setQuery] = useState("");
@@ -82,9 +84,13 @@ export default function Home() {
         </div>
       </div>
       {loading ? (
-        <p className="text-center">Loading...</p>
+        <CardGrid>
+          {Array.from({ length: 6 }).map((_, i) => (
+            <CardSkeleton key={i} />
+          ))}
+        </CardGrid>
       ) : (
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] p-[100px] gap-10 box-border max-md:px-5 max-md:py-[50px] max-md:gap-6 max-[480px]:grid-cols-1 max-[480px]:px-[10px] max-[480px]:py-[30px] max-[480px]:gap-4">
+        <CardGrid>
           {courses.map((course) => (
             <div
               key={course.id}
@@ -105,7 +111,7 @@ export default function Home() {
               </div>
             </div>
           ))}
-        </div>
+        </CardGrid>
       )}
     </div>
   );
