@@ -53,6 +53,16 @@ export default function NoteView() {
     return `${days}d ago`;
   };
 
+  const scrollToHeading = (headingText) => {
+    const allHeadings = document.querySelectorAll("h1, h2");
+    for (const heading of allHeadings) {
+      if (heading.textContent.trim() === headingText.trim()) {
+        heading.scrollIntoView({ behavior: "smooth", block: "start" });
+        break;
+      }
+    }
+  };
+
   return (
     <div className="flex gap-8">
       {/* overview */}
@@ -100,7 +110,10 @@ export default function NoteView() {
                     <div className="flex flex-col gap-3 whitespace-nowrap">
                       {sections.map((section, sIndex) => (
                         <div key={sIndex} className="flex flex-col">
-                          <h4 className="font-bold text-[15px] leading-[1.3] truncate text-[var(--color-text)] hover:text-[var(--color-text-secondary)] transition-colors cursor-pointer">
+                          <h4
+                            className="font-bold text-[15px] leading-[1.3] truncate text-[var(--color-text)] hover:text-[var(--color-text-secondary)] transition-colors cursor-pointer"
+                            onClick={() => scrollToHeading(section.title)}
+                          >
                             {section.title}
                           </h4>
 
@@ -108,6 +121,7 @@ export default function NoteView() {
                             <div
                               key={i}
                               className="text-[12px] leading-6 text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-colors cursor-pointer truncate ml-3"
+                              onClick={() => scrollToHeading(item)}
                             >
                               {item}
                             </div>
