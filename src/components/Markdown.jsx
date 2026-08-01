@@ -5,10 +5,7 @@ import mermaid from "mermaid";
 mermaid.initialize({
   startOnLoad: false,
   theme: "base",
-  flowchart: {
-    useMaxWidth: true,
-    htmlLabels: false,
-  },
+  flowchart: { useMaxWidth: true, htmlLabels: false },
   themeVariables: {
     fontFamily: "inherit",
     fontSize: "14px",
@@ -94,12 +91,34 @@ const components = {
   ),
   strong: ({ children }) => <strong className="font-bold">{children}</strong>,
   em: ({ children }) => <em className="italic">{children}</em>,
-  code({ className, children }) {
-    if (className === "language-mermaid")
-      return <Mermaid chart={String(children)} />;
+  code({ className, children, ...props }) {
+    const raw = Array.isArray(children) ? children.join("") : String(children);
+
+    if (className === "language-mermaid") {
+      return <Mermaid chart={raw.trim()} />;
+    }
+
+    const isBlock = !!className || raw.includes("\n");
+
+    if (isBlock) {
+      const codeString = raw.replace(/\s+$/, "");
+      const language = className?.replace("language-", "") || "";
+
+      return (
+        <pre className="my-4 p-4 bg-[#1e1e24] text-[#f5f5f5] rounded-lg overflow-x-auto text-sm leading-relaxed font-mono whitespace-pre">
+          <code className={language ? `language-${language}` : ""}>
+            {codeString}
+          </code>
+        </pre>
+      );
+    }
+
     return (
-      <code className="bg-[var(--color-bg-secondary)] px-1.5 py-0.5 rounded">
-        {children}
+      <code
+        className="bg-[var(--color-bg-secondary)] px-1.5 py-0.5 rounded"
+        {...props}
+      >
+        {raw.trim()}
       </code>
     );
   },
@@ -107,7 +126,8 @@ const components = {
 };
 
 function MarkdownRenderer({ children }) {
-  return <ReactMarkdown components={components}>{children}</ReactMarkdown>;
+  const markdown = typeof children === "string" ? children : String(children);
+  return <ReactMarkdown components={components}>{markdown}</ReactMarkdown>;
 }
 
 export default memo(MarkdownRenderer);

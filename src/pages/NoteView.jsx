@@ -136,10 +136,6 @@ export default function NoteView() {
 
             <div className="h-px bg-[var(--color-text)] opacity-15 mt-1"></div>
 
-            {/* <div className="tracking-[0.03em] my-3 whitespace-pre-wrap">
-              {selectedNote.content}
-            </div> */}
-
             <div className="my-3">
               <Markdown>{selectedNote.content}</Markdown>
             </div>
