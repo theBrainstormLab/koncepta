@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import { Icon } from "@iconify-icon/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../utils/supabase";
+import Markdown from "../components/Markdown";
 
 export default function NoteView() {
   const { state } = useLocation();
@@ -52,6 +53,16 @@ export default function NoteView() {
     return `${days}d ago`;
   };
 
+  const scrollToHeading = (headingText) => {
+    const allHeadings = document.querySelectorAll("h1, h2");
+    for (const heading of allHeadings) {
+      if (heading.textContent.trim() === headingText.trim()) {
+        heading.scrollIntoView({ behavior: "smooth", block: "start" });
+        break;
+      }
+    }
+  };
+
   return (
     <div className="flex gap-8">
       {/* overview */}
@@ -70,29 +81,56 @@ export default function NoteView() {
               animate={{ opacity: 1, width: 192 }}
               exit={{ opacity: 0, width: 0 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="flex flex-col gap-6 overflow-hidden whitespace-nowrap"
+              className="overflow-hidden"
             >
-              {!loading && (
-                <div className="flex flex-col gap-1.5">
-                  <h4 className="font-[DynaPuff] font-bold tracking-[0.04em] text-sm uppercase truncate">
-                    {module.title}
-                  </h4>
-                  {notes.map((note, i) => (
-                    <div
-                      key={note.id}
-                      onClick={() => setSelectedNote(note)}
-                      className={`group flex gap-2 text-[12px] tracking-[0.03em] cursor-pointer px-1 py-0.5 rounded-md min-w-0 transition-colors ${
-                        selectedNote?.id === note.id
-                          ? "text-[var(--color-text)]"
-                          : "text-[var(--color-text-secondary)] hover:text-[var(--color-text)]"
-                      }`}
-                    >
-                      <span className="shrink-0">{i + 1}.</span>
-                      <span className="truncate">{note.title}</span>
+              {!loading &&
+                selectedNote &&
+                (() => {
+                  const sections = [];
+                  let current = null;
+
+                  selectedNote.content.split("\n").forEach((line) => {
+                    const trimmed = line.trim();
+
+                    if (
+                      trimmed.startsWith("# ") &&
+                      !trimmed.startsWith("## ")
+                    ) {
+                      current = {
+                        title: trimmed.slice(2),
+                        items: [],
+                      };
+                      sections.push(current);
+                    } else if (trimmed.startsWith("## ") && current) {
+                      current.items.push(trimmed.slice(3));
+                    }
+                  });
+
+                  return (
+                    <div className="flex flex-col gap-3 whitespace-nowrap">
+                      {sections.map((section, sIndex) => (
+                        <div key={sIndex} className="flex flex-col">
+                          <h4
+                            className="font-bold text-[15px] leading-[1.3] truncate text-[var(--color-text)] hover:text-[var(--color-text-secondary)] transition-colors cursor-pointer"
+                            onClick={() => scrollToHeading(section.title)}
+                          >
+                            {section.title}
+                          </h4>
+
+                          {section.items.map((item, i) => (
+                            <div
+                              key={i}
+                              className="text-[12px] leading-6 text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-colors cursor-pointer truncate ml-3"
+                              onClick={() => scrollToHeading(item)}
+                            >
+                              {item}
+                            </div>
+                          ))}
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              )}
+                  );
+                })()}
             </motion.div>
           )}
         </AnimatePresence>
@@ -112,8 +150,8 @@ export default function NoteView() {
 
             <div className="h-px bg-[var(--color-text)] opacity-15 mt-1"></div>
 
-            <div className="tracking-[0.03em] my-3 whitespace-pre-wrap">
-              {selectedNote.content}
+            <div className="my-3">
+              <Markdown>{selectedNote.content}</Markdown>
             </div>
 
             <div className="flex justify-between">
