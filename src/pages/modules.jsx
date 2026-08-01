@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Icon } from "@iconify-icon/react";
 import { supabase } from "../utils/supabase";
+import CardSkeleton from "../components/CardSkeleton";
+import CardGrid from "../components/CardGrid";
 
 function Modules() {
   const [query, setQuery] = useState("");
@@ -55,9 +57,13 @@ function Modules() {
       </div>
 
       {loading ? (
-        <p className="text-center mt-20">Loading...</p>
+        <CardGrid>
+          {Array.from({ length: 6 }).map((_, i) => (
+            <CardSkeleton key={i} />
+          ))}
+        </CardGrid>
       ) : (
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] p-[100px] gap-10 box-border max-md:px-5 max-md:py-[50px] max-md:gap-6 max-[480px]:grid-cols-1 max-[480px]:px-[10px] max-[480px]:py-[30px] max-[480px]:gap-4">
+        <CardGrid>
           {filtered.map((mod) => (
             <div
               key={mod.id}
@@ -80,7 +86,7 @@ function Modules() {
               </div>
             </div>
           ))}
-        </div>
+        </CardGrid>
       )}
     </div>
   );
