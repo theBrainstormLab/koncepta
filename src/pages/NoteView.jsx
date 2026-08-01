@@ -4,6 +4,7 @@ import { Icon } from "@iconify-icon/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../utils/supabase";
 import Markdown from "../components/Markdown";
+import NoteViewSkeleton from "../components/NoteViewSkeleton";
 
 export default function NoteView() {
   const { state } = useLocation();
@@ -83,7 +84,28 @@ export default function NoteView() {
               transition={{ duration: 0.3, ease: "easeInOut" }}
               className="overflow-hidden"
             >
-              {!loading &&
+              {loading ? (
+                <div className="flex flex-col gap-3 animate-pulse">
+                  <div className="h-4 w-24 rounded bg-[var(--color-bg-secondary)]" />
+                  <div className="flex flex-col gap-1.5 ml-3">
+                    {Array.from({ length: 3 }).map((_, i) => (
+                      <div
+                        key={i}
+                        className="h-3 w-20 rounded bg-[var(--color-bg-secondary)]"
+                      />
+                    ))}
+                  </div>
+                  <div className="h-4 w-28 rounded bg-[var(--color-bg-secondary)] mt-2" />
+                  <div className="flex flex-col gap-1.5 ml-3">
+                    {Array.from({ length: 2 }).map((_, i) => (
+                      <div
+                        key={i}
+                        className="h-3 w-16 rounded bg-[var(--color-bg-secondary)]"
+                      />
+                    ))}
+                  </div>
+                </div>
+              ) : (
                 selectedNote &&
                 (() => {
                   const sections = [];
@@ -130,7 +152,8 @@ export default function NoteView() {
                       ))}
                     </div>
                   );
-                })()}
+                })()
+              )}
             </motion.div>
           )}
         </AnimatePresence>
@@ -139,7 +162,7 @@ export default function NoteView() {
       {/* main content */}
       <div className="flex-1 mb-20">
         {loading ? (
-          <p>Loading...</p>
+          <NoteViewSkeleton />
         ) : !selectedNote ? (
           <p className="opacity-50">No notes yet.</p>
         ) : (
