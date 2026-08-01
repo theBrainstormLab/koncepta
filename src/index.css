@@ -26,6 +26,20 @@
   src: url("/fonts/DynaPuff.ttf") format("truetype");
   font-display: swap;
 }
+@font-face {
+  font-family: "JetBrainsMono";
+  src: url("/fonts/JetBrainsMono.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Theme override */
+@theme {
+  --font-mono:
+    "JetBrainsMono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+}
 
 /* vars */
 :root {
@@ -92,10 +106,10 @@ a:hover {
 
 /* hide scrollbar in chrome browser */
 .no-scrollbar {
-  -ms-overflow-style: none; 
-  scrollbar-width: none;  
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 .no-scrollbar::-webkit-scrollbar {
-  display: none; 
+  display: none;
 }
