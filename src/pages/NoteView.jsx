@@ -100,7 +100,7 @@ export default function NoteView() {
                     <div className="flex flex-col gap-3 whitespace-nowrap">
                       {sections.map((section, sIndex) => (
                         <div key={sIndex} className="flex flex-col">
-                          <h4 className="font-[DynaPuff] font-bold text-[15px] leading-none mb-1 truncate text-[var(--color-text)] hover:text-[var(--color-text-secondary)] transition-colors cursor-pointer">
+                          <h4 className="font-bold text-[15px] leading-[1.3] truncate text-[var(--color-text)] hover:text-[var(--color-text-secondary)] transition-colors cursor-pointer">
                             {section.title}
                           </h4>
 
