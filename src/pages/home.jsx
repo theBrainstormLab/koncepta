@@ -35,7 +35,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-[100svh]">
+    <div className="min-h-[100svh] mt-0 md:mt-10 md:min-h-[calc(100svh-235.9px)]">
       <div className="min-h-[100svh] sm:min-h-[100svh] md:min-h-[calc(100svh-200px)] flex flex-col justify-center">
         <div>
           <div className="font-[DynaPuff] text-center font-bold pb-5 sm:text-5xl lg:text-6xl text-4xl text-shadow-[var(--shadow-text)]">
