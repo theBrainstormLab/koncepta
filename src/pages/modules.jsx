@@ -37,23 +37,29 @@ function Modules() {
   );
 
   return (
-    <div className="mt-10">
-      <h1 className="text-center font-['DynaPuff'] text-[36px] font-bold tracking-[1px] text-[var(--color-text)] text-shadow-[var(--shadow-text)]">
-        {course.title}
-      </h1>
+    <div className="min-h-[100svh] mt-0 md:mt-10 md:min-h-[calc(100svh-235.4px)] ">
+      <div className="min-h-[100svh] sm:min-h-[100svh] md:min-h-0 flex flex-col justify-center md:justify-start">
+        <h1 className="text-center mt-4 sm:mt-4 md:mt-0 font-['DynaPuff'] text-[36px] font-bold tracking-[1px] text-[var(--color-text)] text-shadow-[var(--shadow-text)]">
+          {course.title}
+        </h1>
 
-      <div className="w-[454px] h-[60px] rounded-[20px] flex px-4 mx-auto border-2 border-[var(--color-border)] mt-12 mb-0 box-border max-md:w-[90%] max-md:max-w-[454px] max-md:h-[50px] max-md:mt-8 max-[480px]:h-[36px] max-[480px]:px-3 max-[480px]:mt-6 max-[480px]:rounded-[12px]">
-        <span className="text-[24px] flex items-center text-[var(--color-text-secondary)]">
-          <Icon icon="ri:search-2-line" />
-        </span>
+        <div className="w-[454px] h-[60px] rounded-[20px] flex px-4 mx-auto border-2 border-[var(--color-border)] mt-12 mb-0 box-border max-md:w-[90%] max-md:max-w-[454px] max-md:h-[50px] max-md:mt-8 max-[480px]:h-[36px] max-[480px]:px-3 max-[480px]:mt-6 max-[480px]:rounded-[12px]">
+          <span className="text-[24px] flex items-center text-[var(--color-text-secondary)]">
+            <Icon icon="ri:search-2-line" />
+          </span>
 
-        <input
-          type="text"
-          className="text-base h-min my-auto ml-[10px] w-full focus:outline-none placeholder:text-[var(--color-text-placeholder)]"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search modules..."
-        />
+          <input
+            type="text"
+            className="text-base h-min my-auto ml-[10px] w-full focus:outline-none placeholder:text-[var(--color-text-placeholder)]"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search modules..."
+          />
+        </div>
+        <div className="absolute bottom-15 left-1/2 -translate-x-1/2 flex md:hidden items-center text-xs text-[var(--color-border)] font-[Poppins-Light]">
+          scroll for more
+          <Icon icon="ri:arrow-down-long-line" />
+        </div>
       </div>
 
       {loading ? (

@@ -65,7 +65,7 @@ export default function NoteView() {
   };
 
   return (
-    <div className="flex gap-8">
+    <div className="flex gap-8 min-h-[100svh]">
       {/* overview */}
       <div className="flex flex-col gap-6 pt-1 mx-3">
         <div
