@@ -76,9 +76,9 @@ useEffect(() => {
 
   return (
     <div className="flex flex-col sm:flex-row gap-8 min-h-[100svh] relative px-4 sm:px-0">
-      <header className="fixed top-0 left-0 right-0 h-16.5 bg-[var(--color-bg)] px-4 flex items-center justify-between z-50 md:hidden"></header>
+      <header className="fixed top-0 left-0 right-0 h-16.5  px-4 flex items-center justify-between z-50 md:hidden"></header>
       {/* overview */}
-      <div className="fixed top-6 left-5 z-50 sm:relative sm:top-6 sm:left-0 sm:z-auto sm:flex sm:flex-col sm:gap-6 sm:pt-1 sm:mx-3 sm:sticky sm:h-fit">
+      <div className="fixed top-5 left-5 z-50 sm:relative sm:top-6 sm:left-0 sm:z-auto sm:flex sm:flex-col sm:gap-6 sm:pt-1 sm:mx-3 sm:sticky sm:h-fit">
         <div
           className="bg-[var(--color-bg-secondary)] w-9 h-9 rounded-[10px] flex items-center justify-center cursor-pointer relative z-50 sm:static sm:z-auto"
           onClick={() => setShowOverview(!showOverview)}
@@ -215,7 +215,7 @@ useEffect(() => {
       </div>
 
       {/* chatbot */}
-      <div className="fixed top-6 right-5 z-50 sm:relative md:top-6 sm:right-0 sm:z-auto sm:flex sm:flex-col sm:gap-6 sm:pt-1 sm:mx-3 sm:sticky sm:h-fit">
+      <div className="fixed top-5 right-5 z-50 sm:relative md:top-6 sm:right-0 sm:z-auto sm:flex sm:flex-col sm:gap-6 sm:pt-1 sm:mx-3 sm:sticky sm:h-fit">
         <div className="flex justify-end">
           <div
             className="bg-[var(--color-bg-secondary)] w-9 h-9 rounded-[10px] flex items-center justify-center cursor-pointer"
