@@ -50,7 +50,7 @@ export default function Navbar() {
           notes
         </a>
         <a
-          href="/"
+          href="/profile"
           className="text-base md:text-lg md:w-[120px] md:tracking-widest"
         >
           profile
@@ -107,7 +107,7 @@ export default function Navbar() {
             notes
           </a>
           <a
-            href="/"
+            href="/profile"
             className="block text-center px-4 py-5 no-underline text-xl"
             onClick={() => setIsMenuOpen(false)}
           >
