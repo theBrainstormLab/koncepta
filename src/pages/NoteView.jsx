@@ -140,7 +140,7 @@ useEffect(() => {
                   });
 
                   return (
-                    <div className="flex flex-col gap-3 whitespace-nowrap">
+                    <div className="flex flex-col gap-3 max-md:mt-4.5  whitespace-nowrap">
                       {sections.map((section, sIndex) => (
                         <div key={sIndex} className="flex flex-col">
                           <h4
