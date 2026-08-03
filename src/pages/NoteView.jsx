@@ -6,7 +6,7 @@ import { supabase } from "../utils/supabase";
 import Markdown from "../components/Markdown";
 import NoteViewSkeleton from "../components/NoteViewSkeleton";
 
-const isMobile = () => typeof window !== "undefined" && window.innerWidth < 768;
+const isMobile = () => typeof window !== "undefined" && window.innerWidth < 640;
 
 export default function NoteView() {
   const { state } = useLocation();
@@ -57,6 +57,7 @@ export default function NoteView() {
     return `${days}d ago`;
   };
 
+  //Close overview and chatbot if touch or scroll the page only in sm
   const scrollToHeading = (headingText) => {
     const allHeadings = document.querySelectorAll("h1, h2");
     for (const heading of allHeadings) {
@@ -66,14 +67,33 @@ export default function NoteView() {
       }
     }
   };
-
-const [isScrolled, setIsScrolled] = useState(false);
-useEffect(() => {
-  const handleScroll = () => setIsScrolled(window.scrollY > 100);
-  window.addEventListener("scroll", handleScroll);
-  return () => window.removeEventListener("scroll", handleScroll);
-}, []);
-
+  const [isScrolled, setIsScrolled] = useState(false);
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isMobile()) {
+        setShowOverview(false);
+        setShowChat(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+  const toggleOverview = (e) => {
+    e.stopPropagation();
+   if (isMobile()) { setShowChat(false);}
+    setShowOverview((prev) => !prev);
+  };
+  const toggleChat = (e) => {
+    e.stopPropagation();
+    if (isMobile()) {setShowOverview(false);}
+    setShowChat((prev) => !prev);
+  };
+  const handleMainContentClick = () => {
+    if (isMobile()) {
+      setShowOverview(false);
+      setShowChat(false);
+    }
+  };
   return (
     <div className="flex flex-col sm:flex-row gap-8 min-h-[100svh] relative px-4 sm:px-0">
       <header className="fixed top-0 left-0 right-0 h-16.5  px-4 flex items-center justify-between z-50 md:hidden"></header>
@@ -81,7 +101,7 @@ useEffect(() => {
       <div className="fixed top-5 left-5 z-50 sm:relative sm:top-6 sm:left-0 sm:z-auto sm:flex sm:flex-col sm:gap-6 sm:pt-1 sm:mx-3 sm:sticky sm:h-fit">
         <div
           className="bg-[var(--color-bg-secondary)] w-9 h-9 rounded-[10px] flex items-center justify-center cursor-pointer relative z-50 sm:static sm:z-auto"
-          onClick={() => setShowOverview(!showOverview)}
+          onClick={toggleOverview}
         >
           <Icon icon="ri:menu-4-line" width="22" height="22" />
         </div>
@@ -171,7 +191,11 @@ useEffect(() => {
       </div>
 
       {/* main content */}
-      <div className="flex-1 mb-20 pt-16 sm:pt-0">
+      <div
+        className="flex-1 mb-20 pt-16 sm:pt-0"
+        onClick={handleMainContentClick}
+        onTouchMove={handleMainContentClick}
+      >
         {loading ? (
           <NoteViewSkeleton />
         ) : !selectedNote ? (
@@ -219,7 +243,7 @@ useEffect(() => {
         <div className="flex justify-end">
           <div
             className="bg-[var(--color-bg-secondary)] w-9 h-9 rounded-[10px] flex items-center justify-center cursor-pointer"
-            onClick={() => setShowChat(!showChat)}
+            onClick={toggleChat}
           >
             <Icon icon="ri:message-3-line" width="22" height="22" />
           </div>
