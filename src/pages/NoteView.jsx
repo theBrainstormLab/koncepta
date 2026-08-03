@@ -6,6 +6,8 @@ import { supabase } from "../utils/supabase";
 import Markdown from "../components/Markdown";
 import NoteViewSkeleton from "../components/NoteViewSkeleton";
 
+const isMobile = () => typeof window !== "undefined" && window.innerWidth < 768;
+
 export default function NoteView() {
   const { state } = useLocation();
   const { course, module } = state;
@@ -13,8 +15,9 @@ export default function NoteView() {
   const [notes, setNotes] = useState([]);
   const [selectedNote, setSelectedNote] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [showOverview, setShowOverview] = useState(true);
-  const [showChat, setShowChat] = useState(true);
+
+  const [showOverview, setShowOverview] = useState(!isMobile());
+  const [showChat, setShowChat] = useState(!isMobile());
 
   useEffect(() => {
     async function fetchNotes() {
@@ -64,12 +67,20 @@ export default function NoteView() {
     }
   };
 
+const [isScrolled, setIsScrolled] = useState(false);
+useEffect(() => {
+  const handleScroll = () => setIsScrolled(window.scrollY > 100);
+  window.addEventListener("scroll", handleScroll);
+  return () => window.removeEventListener("scroll", handleScroll);
+}, []);
+
   return (
-    <div className="flex gap-8 min-h-[100svh]">
+    <div className="flex flex-col sm:flex-row gap-8 min-h-[100svh] relative px-4 sm:px-0">
+      <header className="fixed top-0 left-0 right-0 h-16.5 bg-[var(--color-bg)] px-4 flex items-center justify-between z-50 md:hidden"></header>
       {/* overview */}
-      <div className="flex flex-col gap-6 pt-1 mx-3 sticky top-6 h-fit">
+      <div className="fixed top-6 left-5 z-50 sm:relative sm:top-6 sm:left-0 sm:z-auto sm:flex sm:flex-col sm:gap-6 sm:pt-1 sm:mx-3 sm:sticky sm:h-fit">
         <div
-          className="bg-[var(--color-bg-secondary)] w-9 h-9 rounded-[10px] flex items-center justify-center cursor-pointer"
+          className="bg-[var(--color-bg-secondary)] w-9 h-9 rounded-[10px] flex items-center justify-center cursor-pointer relative z-50 sm:static sm:z-auto"
           onClick={() => setShowOverview(!showOverview)}
         >
           <Icon icon="ri:menu-4-line" width="22" height="22" />
@@ -82,7 +93,7 @@ export default function NoteView() {
               animate={{ opacity: 1, width: 192 }}
               exit={{ opacity: 0, width: 0 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="overflow-hidden"
+              className="overflow-hidden fixed top-0 left-0 h-full bg-[var(--color-bg)] p-6 pt-16 shadow-2xl z-40 sm:static sm:bg-transparent sm:p-0 sm:shadow-none sm:z-auto"
             >
               {loading ? (
                 <div className="flex flex-col gap-3 animate-pulse">
@@ -160,7 +171,7 @@ export default function NoteView() {
       </div>
 
       {/* main content */}
-      <div className="flex-1 mb-20">
+      <div className="flex-1 mb-20 pt-16 sm:pt-0">
         {loading ? (
           <NoteViewSkeleton />
         ) : !selectedNote ? (
@@ -204,7 +215,7 @@ export default function NoteView() {
       </div>
 
       {/* chatbot */}
-      <div className="flex flex-col gap-6 pt-1 mx-3 sticky top-6 h-fit">  
+      <div className="fixed top-6 right-5 z-50 sm:relative md:top-6 sm:right-0 sm:z-auto sm:flex sm:flex-col sm:gap-6 sm:pt-1 sm:mx-3 sm:sticky sm:h-fit">
         <div className="flex justify-end">
           <div
             className="bg-[var(--color-bg-secondary)] w-9 h-9 rounded-[10px] flex items-center justify-center cursor-pointer"

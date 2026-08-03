@@ -64,8 +64,8 @@ export default function Navbar() {
       >
         <Icon
           icon={isMenuOpen ? "ri:close-line" : "ri:menu-line"}
-          width="24"
-          height="24"
+          width="22"
+          height="22"
         />
       </button>
 
