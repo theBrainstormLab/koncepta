@@ -20,6 +20,7 @@ function App() {
         <Route path="/note-view" element={<NoteView />} />
         <Route path="/about" element={<About />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/profile/:username" element={<Profile />} />
       </Routes>
       <Footer />
     </>
