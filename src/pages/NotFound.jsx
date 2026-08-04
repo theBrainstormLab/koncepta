@@ -2,7 +2,7 @@ import ForOFor from "../assets/404.svg?react";
 
 export default function NotFound() {
   return (
-    <div className="flex flex-col justify-center items-center my-10">
+    <div className="flex flex-col justify-center items-center my-10 min-h-[90svh] mt-0 md:mt-10 md:min-h-[calc(100svh-274.5px)]">
       <h1 className="font-[DynaPuff] font-bold text-6xl my-10 [text-shadow:0_4px_8px_rgba(79,175,175,0.25)]">
         404
       </h1>
