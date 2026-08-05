@@ -31,6 +31,7 @@ export function ProfileView({
   editable = false,
   email,
   onCreateNote,
+  onLogout,
 }) {
   return (
     <Page>
@@ -40,6 +41,7 @@ export function ProfileView({
         editable={editable}
         email={email}
         onCreateNote={onCreateNote}
+        onLogout={onLogout}
       />
 
       <div className="mt-7">

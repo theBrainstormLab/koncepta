@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { supabase } from "../utils/supabase";
 
 import { SCREENS } from "../utils/profileConstants";
 import { AuthShell } from "../components/profile/AuthShell";
@@ -10,8 +12,34 @@ export default function Profile() {
   const { username } = useParams();
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [isSignUp, setIsSignUp] = useState(false);
   const [screen, setScreen] = useState(SCREENS.OVERVIEW);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setIsLoggedIn(!!data.session);
+      setLoading(false);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsLoggedIn(!!session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  if (loading) return null;
+
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+      console.error(error);
+    }
+  };
 
   // Public profile
   if (username) {
@@ -20,13 +48,7 @@ export default function Profile() {
 
   // Authentication
   if (!isLoggedIn) {
-    return (
-      <AuthShell
-        isSignUp={isSignUp}
-        setIsSignUp={setIsSignUp}
-        setIsLoggedIn={setIsLoggedIn}
-      />
-    );
+    return <AuthShell isSignUp={isSignUp} setIsSignUp={setIsSignUp} />;
   }
 
   // Note editor
@@ -51,6 +73,7 @@ export default function Profile() {
       editable
       email="shaaanuu@example.com"
       onCreateNote={() => setScreen(SCREENS.EDITOR)}
+      onLogout={handleLogout}
     />
   );
 }

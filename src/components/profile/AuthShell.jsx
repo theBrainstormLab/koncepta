@@ -1,18 +1,103 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Icon } from "@iconify-icon/react";
 import { AuthField } from "./ProfileParts";
+import { supabase } from "../../utils/supabase";
 
 export function AuthShell({ isSignUp, setIsSignUp, setIsLoggedIn }) {
   const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [message, setMessage] = useState("");
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (!message) return;
+
+    const timer = setTimeout(() => {
+      setMessage("");
+    }, 7000);
+
+    return () => clearTimeout(timer);
+  }, [message]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    setMessage("");
+
+    if (isSignUp) {
+      if (!username.trim()) {
+        setMessage("Username is required.");
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        setMessage("Passwords do not match.");
+        return;
+      }
+
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            username: username.trim(),
+          },
+        },
+      });
+
+      if (error) {
+        console.error(error);
+        setMessage(error.message);
+        return;
+      }
+
+      setMessage(
+        "Confirmation email sent. Check your inbox before signing in.",
+      );
+
+      return;
+    }
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      console.error(error);
+      setMessage(error.message);
+      return;
+    }
+
     setIsLoggedIn(true);
   };
 
+  const handleGoogleLogin = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+    });
+
+    if (error) {
+      console.error(error);
+      setMessage(error.message);
+    }
+  };
+
   const fields = [
+    ...(isSignUp
+      ? [
+          {
+            icon: "ri:user-line",
+            type: "text",
+            placeholder: "username",
+            value: username,
+            onChange: (e) => setUsername(e.target.value),
+            autoComplete: "username",
+            wrapperClassName: "relative",
+          },
+        ]
+      : []),
     {
       icon: "ri:mail-line",
       type: "email",
@@ -20,7 +105,7 @@ export function AuthShell({ isSignUp, setIsSignUp, setIsLoggedIn }) {
       value: email,
       onChange: (e) => setEmail(e.target.value),
       autoComplete: "email",
-      wrapperClassName: "relative",
+      wrapperClassName: "relative mt-4",
     },
     {
       icon: "ri:lock-2-line",
@@ -29,6 +114,7 @@ export function AuthShell({ isSignUp, setIsSignUp, setIsLoggedIn }) {
       value: password,
       onChange: (e) => setPassword(e.target.value),
       autoComplete: isSignUp ? "new-password" : "current-password",
+      wrapperClassName: "relative mt-4",
     },
     ...(isSignUp
       ? [
@@ -39,6 +125,7 @@ export function AuthShell({ isSignUp, setIsSignUp, setIsLoggedIn }) {
             value: confirmPassword,
             onChange: (e) => setConfirmPassword(e.target.value),
             autoComplete: "new-password",
+            wrapperClassName: "relative mt-4",
           },
         ]
       : []),
@@ -46,6 +133,55 @@ export function AuthShell({ isSignUp, setIsSignUp, setIsLoggedIn }) {
 
   return (
     <main className="min-h-[calc(100svh-180px)] px-5 py-16 sm:py-20">
+      {message && (
+        <div
+          className="
+            fixed right-5 top-5 z-50
+            flex max-w-[380px] items-start gap-3
+            rounded-[14px]
+            border border-[var(--color-border)]
+            bg-[var(--color-bg)]
+            px-5 py-4
+            shadow-[var(--shadow-box-hover)]
+          "
+        >
+          <Icon
+            icon={
+              message.includes("Confirmation email")
+                ? "ri:mail-check-line"
+                : "ri:error-warning-line"
+            }
+            width="20"
+            className="mt-0.5 shrink-0"
+          />
+
+          <div className="min-w-0">
+            <p className="font-[Poppins-Bold] text-sm">
+              {message.includes("Confirmation email")
+                ? "check your inbox"
+                : "something went wrong"}
+            </p>
+
+            <p className="mt-1 text-xs text-[var(--color-text-secondary)]">
+              {message}
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setMessage("")}
+            className="
+              ml-2 shrink-0 cursor-pointer
+              text-[var(--color-text-secondary)]
+              transition hover:text-[var(--color-text)]
+            "
+            aria-label="Close notification"
+          >
+            <Icon icon="ri:close-line" width="16" />
+          </button>
+        </div>
+      )}
+
       <div className="mx-auto flex w-full max-w-[720px] flex-col items-center">
         <div className="text-center">
           <h1
@@ -121,7 +257,7 @@ export function AuthShell({ isSignUp, setIsSignUp, setIsLoggedIn }) {
 
           <button
             type="button"
-            onClick={() => setIsLoggedIn(true)}
+            onClick={handleGoogleLogin}
             className="
               flex h-[56px] w-full cursor-pointer
               items-center justify-center gap-3
@@ -147,7 +283,10 @@ export function AuthShell({ isSignUp, setIsSignUp, setIsLoggedIn }) {
                 Already have an account?
                 <button
                   type="button"
-                  onClick={() => setIsSignUp(false)}
+                  onClick={() => {
+                    setMessage("");
+                    setIsSignUp(false);
+                  }}
                   className="
                     cursor-pointer pl-1
                     text-[var(--color-text)]
@@ -162,7 +301,10 @@ export function AuthShell({ isSignUp, setIsSignUp, setIsLoggedIn }) {
                 Don't have an account?
                 <button
                   type="button"
-                  onClick={() => setIsSignUp(true)}
+                  onClick={() => {
+                    setMessage("");
+                    setIsSignUp(true);
+                  }}
                   className="
                     cursor-pointer pl-1
                     text-[var(--color-text)]
