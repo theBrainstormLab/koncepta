@@ -59,13 +59,13 @@ export default function Navbar() {
 
       {/* Mobile toggle -> visible on mobile, hidden from sm up */}
       <button
-        className="sm:hidden absolute top-5 right-5 z-[1001] flex justify-center items-center bg-[var(--color-bg-secondary)] rounded-[10px] w-9 h-9 mx-auto"
+        className="sm:hidden absolute top-4 right-5 z-[1001] flex justify-center items-center bg-[var(--color-bg-secondary)] rounded-[10px] w-9 h-9 mx-auto"
         onClick={toggleMenu}
       >
         <Icon
           icon={isMenuOpen ? "ri:close-line" : "ri:menu-line"}
-          width="24"
-          height="24"
+          width="22"
+          height="22"
         />
       </button>
 
