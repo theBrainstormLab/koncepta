@@ -1,33 +1,9 @@
 import { HEADING } from "../../utils/profileConstants";
 import { Page, ProfileHeader, NotesGrid } from "./ProfileParts";
 
-// Temporary mock data.
-// Replace with Supabase query later.
-const notes = [
-  {
-    title: "Operating Systems",
-    code: "CS203",
-    course: "BSc Computer Science",
-  },
-  {
-    title: "Database Management Systems",
-    code: "CS202",
-    course: "BSc Computer Science",
-  },
-  {
-    title: "Data Structures and Algorithms",
-    code: "CS201",
-    course: "BSc Computer Science",
-  },
-  {
-    title: "Software Project Management",
-    code: "CSC3CJ201",
-    course: "BSc Computer Science",
-  },
-];
-
 export function ProfileView({
   username,
+  notes = [],
   editable = false,
   email,
   onCreateNote,

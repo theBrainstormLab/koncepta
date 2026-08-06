@@ -3,9 +3,8 @@ import { Icon } from "@iconify-icon/react";
 import { AuthField } from "./ProfileParts";
 import { supabase } from "../../utils/supabase";
 
-export function AuthShell({ isSignUp, setIsSignUp, setIsLoggedIn }) {
+export function AuthShell({ isSignUp, setIsSignUp }) {
   const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -22,15 +21,9 @@ export function AuthShell({ isSignUp, setIsSignUp, setIsLoggedIn }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setMessage("");
 
     if (isSignUp) {
-      if (!username.trim()) {
-        setMessage("Username is required.");
-        return;
-      }
-
       if (password !== confirmPassword) {
         setMessage("Passwords do not match.");
         return;
@@ -39,11 +32,6 @@ export function AuthShell({ isSignUp, setIsSignUp, setIsLoggedIn }) {
       const { error } = await supabase.auth.signUp({
         email,
         password,
-        options: {
-          data: {
-            username: username.trim(),
-          },
-        },
       });
 
       if (error) {
@@ -55,7 +43,6 @@ export function AuthShell({ isSignUp, setIsSignUp, setIsLoggedIn }) {
       setMessage(
         "Confirmation email sent. Check your inbox before signing in.",
       );
-
       return;
     }
 
@@ -69,35 +56,9 @@ export function AuthShell({ isSignUp, setIsSignUp, setIsLoggedIn }) {
       setMessage(error.message);
       return;
     }
-
-    setIsLoggedIn(true);
-  };
-
-  const handleGoogleLogin = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-    });
-
-    if (error) {
-      console.error(error);
-      setMessage(error.message);
-    }
   };
 
   const fields = [
-    ...(isSignUp
-      ? [
-          {
-            icon: "ri:user-line",
-            type: "text",
-            placeholder: "username",
-            value: username,
-            onChange: (e) => setUsername(e.target.value),
-            autoComplete: "username",
-            wrapperClassName: "relative",
-          },
-        ]
-      : []),
     {
       icon: "ri:mail-line",
       type: "email",
@@ -219,8 +180,7 @@ export function AuthShell({ isSignUp, setIsSignUp, setIsLoggedIn }) {
               type="button"
               className="
                 ml-auto mt-2 block cursor-pointer
-                text-xs text-[var(--color-text-secondary)]
-                underline underline-offset-4
+                text-xs text-[var(--color-text-secondary)] underline underline-offset-4
               "
             >
               forgot password?
@@ -240,44 +200,10 @@ export function AuthShell({ isSignUp, setIsSignUp, setIsLoggedIn }) {
             "
           >
             {isSignUp ? "sign up" : "sign in"}
-
             <span className="ml-2 transition group-hover:ml-3">→</span>
           </button>
 
-          <div
-            className="
-              my-8 flex items-center gap-8
-              text-xs text-[var(--color-text-secondary)]
-            "
-          >
-            <span className="h-px flex-1 bg-[var(--color-border)]" />
-            OR
-            <span className="h-px flex-1 bg-[var(--color-border)]" />
-          </div>
-
-          <button
-            type="button"
-            onClick={handleGoogleLogin}
-            className="
-              flex h-[56px] w-full cursor-pointer
-              items-center justify-center gap-3
-              rounded-[14px]
-              border border-[var(--color-border)]
-              bg-transparent text-sm
-              transition
-              hover:shadow-[var(--shadow-box-hover)]
-            "
-          >
-            <Icon icon="flat-color-icons:google" width="18" />
-            continue with google
-          </button>
-
-          <p
-            className="
-              mt-5 text-center text-xs
-              text-[var(--color-text-secondary)]
-            "
-          >
+          <p className="mt-5 text-center text-xs text-[var(--color-text-secondary)]">
             {isSignUp ? (
               <>
                 Already have an account?
@@ -287,11 +213,7 @@ export function AuthShell({ isSignUp, setIsSignUp, setIsLoggedIn }) {
                     setMessage("");
                     setIsSignUp(false);
                   }}
-                  className="
-                    cursor-pointer pl-1
-                    text-[var(--color-text)]
-                    underline underline-offset-4
-                  "
+                  className="cursor-pointer pl-1 text-[var(--color-text)] underline underline-offset-4"
                 >
                   sign in
                 </button>
@@ -305,11 +227,7 @@ export function AuthShell({ isSignUp, setIsSignUp, setIsLoggedIn }) {
                     setMessage("");
                     setIsSignUp(true);
                   }}
-                  className="
-                    cursor-pointer pl-1
-                    text-[var(--color-text)]
-                    underline underline-offset-4
-                  "
+                  className="cursor-pointer pl-1 text-[var(--color-text)] underline underline-offset-4"
                 >
                   sign up
                 </button>

@@ -207,7 +207,7 @@ export function NotesGrid({ notes, editable }) {
       "
     >
       {notes.map((note) => (
-        <NoteCard key={note.code} note={note} editable={editable} />
+        <NoteCard key={note.id ?? note.code} note={note} editable={editable} />
       ))}
     </div>
   );
