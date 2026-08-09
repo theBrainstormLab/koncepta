@@ -41,6 +41,10 @@ function clearDraft(userId) {
 
 export function EditorView({
   userId,
+  noteId = null,
+  initialTitle = "",
+  initialModuleId = "",
+  initialBody = "",
   modules = [],
   modulesLoading = false,
   onBack,
@@ -48,15 +52,17 @@ export function EditorView({
   publishing = false,
   publishError = "",
 }) {
-  const [title, setTitle] = useState("");
-  const [moduleId, setModuleId] = useState("");
-  const [body, setBody] = useState("");
+  const isEditing = Boolean(noteId);
+
+  const [title, setTitle] = useState(initialTitle);
+  const [moduleId, setModuleId] = useState(initialModuleId);
+  const [body, setBody] = useState(initialBody);
   const [restoredNotice, setRestoredNotice] = useState(false);
   const [draftSavedNotice, setDraftSavedNotice] = useState(false);
 
-  // Restore a local draft on mount, once we know who the user is.
+  // Restore a local draft on mount, only when creating a fresh note.
   useEffect(() => {
-    if (!userId) return;
+    if (!userId || isEditing) return;
 
     const draft = loadDraft(userId);
     if (!draft) return;
@@ -65,7 +71,7 @@ export function EditorView({
     setModuleId(draft.moduleId ?? "");
     setBody(draft.body ?? "");
     setRestoredNotice(true);
-  }, [userId]);
+  }, [userId, isEditing]);
 
   // Default the module select once modules load in, if nothing's chosen yet.
   useEffect(() => {
@@ -74,7 +80,7 @@ export function EditorView({
     }
   }, [modules, moduleId]);
 
-  const draft = { title, moduleId, body };
+  const draft = { noteId, title, moduleId, body };
 
   const handleSaveDraft = () => {
     saveDraft(userId, draft);
@@ -93,16 +99,18 @@ export function EditorView({
 
   const handlePublish = async () => {
     const ok = await onPublish?.(draft);
-    if (ok) clearDraft(userId);
+    if (ok && !isEditing) clearDraft(userId);
   };
 
   return (
     <Page>
       <BackLink onClick={onBack}>back to my notes</BackLink>
 
-      <h1 className={`${HEADING} mt-6 text-3xl sm:text-4xl`}>create a note</h1>
+      <h1 className={`${HEADING} mt-6 text-3xl sm:text-4xl`}>
+        {isEditing ? "edit note" : "create a note"}
+      </h1>
 
-      {restoredNotice && (
+      {restoredNotice && !isEditing && (
         <div className="mt-4 flex items-center justify-between rounded-[10px] border border-[var(--color-border)] px-4 py-2 text-sm text-[var(--color-text-secondary)]">
           <span>restored your last unsaved draft</span>
           <button
@@ -210,16 +218,24 @@ export function EditorView({
           <span className="text-sm text-red-500">{publishError}</span>
         )}
 
-        <EditorActionButton onClick={handleSaveDraft} disabled={publishing}>
-          save draft
-        </EditorActionButton>
+        {!isEditing && (
+          <EditorActionButton onClick={handleSaveDraft} disabled={publishing}>
+            save draft
+          </EditorActionButton>
+        )}
 
         <EditorActionButton
           variant="primary"
           onClick={handlePublish}
           disabled={publishing}
         >
-          {publishing ? "publishing..." : "publish note"}
+          {publishing
+            ? isEditing
+              ? "saving..."
+              : "publishing..."
+            : isEditing
+              ? "save changes"
+              : "publish note"}
         </EditorActionButton>
       </div>
     </Page>

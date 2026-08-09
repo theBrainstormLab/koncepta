@@ -146,6 +146,21 @@ async function fetchModules() {
   }));
 }
 
+async function fetchNoteById(noteId) {
+  const { data, error } = await supabase
+    .from("notes")
+    .select("id, title, content, module_id")
+    .eq("id", noteId)
+    .single();
+
+  if (error) {
+    console.error("Failed to fetch note:", error);
+    return null;
+  }
+
+  return data;
+}
+
 async function createNote({ authorId, moduleId, title, content }) {
   const trimmedTitle = title.trim();
   const trimmedContent = content.trim();
@@ -171,6 +186,45 @@ async function createNote({ authorId, moduleId, title, content }) {
   }
 
   return { data };
+}
+
+async function updateNote({ noteId, moduleId, title, content }) {
+  const trimmedTitle = title.trim();
+  const trimmedContent = content.trim();
+
+  if (!trimmedTitle) return { error: "Give your note a title first." };
+  if (!moduleId) return { error: "Pick a module for this note." };
+  if (!trimmedContent) return { error: "Your note is empty." };
+
+  const { data, error } = await supabase
+    .from("notes")
+    .update({
+      module_id: moduleId,
+      title: trimmedTitle,
+      content: trimmedContent,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", noteId)
+    .select("id")
+    .single();
+
+  if (error) {
+    console.error("Failed to update note:", error);
+    return { error: "Couldn't save your changes. Try again." };
+  }
+
+  return { data };
+}
+
+async function deleteNote(noteId) {
+  const { error } = await supabase.from("notes").delete().eq("id", noteId);
+
+  if (error) {
+    console.error("Failed to delete note:", error);
+    return { error: "Couldn't delete that note. Try again." };
+  }
+
+  return { data: true };
 }
 
 async function fetchUserByUsername(username) {
@@ -204,6 +258,7 @@ export default function Profile() {
   const [modulesLoading, setModulesLoading] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [publishError, setPublishError] = useState("");
+  const [editingNote, setEditingNote] = useState(null);
 
   useEffect(() => {
     let active = true;
@@ -326,6 +381,7 @@ export default function Profile() {
 
   const handleOpenEditor = async () => {
     setPublishError("");
+    setEditingNote(null);
     setModulesLoading(true);
 
     const moduleList = await fetchModules();
@@ -335,18 +391,63 @@ export default function Profile() {
     setScreen(SCREENS.EDITOR);
   };
 
+  const handleEditNote = async (note) => {
+    setPublishError("");
+    setModulesLoading(true);
+
+    const [moduleList, fullNote] = await Promise.all([
+      modules.length > 0 ? Promise.resolve(modules) : fetchModules(),
+      fetchNoteById(note.id),
+    ]);
+
+    setModules(moduleList);
+    setModulesLoading(false);
+
+    if (!fullNote) {
+      setPublishError("Couldn't load that note. Try again.");
+      return;
+    }
+
+    setEditingNote(fullNote);
+    setScreen(SCREENS.EDITOR);
+  };
+
+  const handleDeleteNote = async (note) => {
+    const confirmed = window.confirm(
+      `Delete "${note.title}"? This can't be undone.`,
+    );
+    if (!confirmed) return;
+
+    const { error } = await deleteNote(note.id);
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    const userNotes = await fetchNotesByAuthorId(profile.id);
+    setNotes(userNotes);
+  };
+
   const handlePublish = async (draft) => {
     if (!profile) return false;
 
     setPublishing(true);
     setPublishError("");
 
-    const { error } = await createNote({
-      authorId: profile.id,
-      moduleId: draft.moduleId,
-      title: draft.title,
-      content: draft.body,
-    });
+    const { error } = draft.noteId
+      ? await updateNote({
+          noteId: draft.noteId,
+          moduleId: draft.moduleId,
+          title: draft.title,
+          content: draft.body,
+        })
+      : await createNote({
+          authorId: profile.id,
+          moduleId: draft.moduleId,
+          title: draft.title,
+          content: draft.body,
+        });
 
     setPublishing(false);
 
@@ -357,6 +458,7 @@ export default function Profile() {
 
     const userNotes = await fetchNotesByAuthorId(profile.id);
     setNotes(userNotes);
+    setEditingNote(null);
     setScreen(SCREENS.OVERVIEW);
     return true;
   };
@@ -390,9 +492,16 @@ export default function Profile() {
     return (
       <EditorView
         userId={profile?.id}
+        noteId={editingNote?.id ?? null}
+        initialTitle={editingNote?.title ?? ""}
+        initialModuleId={editingNote?.module_id ?? ""}
+        initialBody={editingNote?.content ?? ""}
         modules={modules}
         modulesLoading={modulesLoading}
-        onBack={() => setScreen(SCREENS.OVERVIEW)}
+        onBack={() => {
+          setEditingNote(null);
+          setScreen(SCREENS.OVERVIEW);
+        }}
         onPublish={handlePublish}
         publishing={publishing}
         publishError={publishError}
@@ -411,6 +520,8 @@ export default function Profile() {
       onUsernameChange={handleUsernameChange}
       usernameError={usernameError}
       savingUsername={savingUsername}
+      onEditNote={handleEditNote}
+      onDeleteNote={handleDeleteNote}
     />
   );
 }

@@ -11,6 +11,8 @@ export function ProfileView({
   onUsernameChange,
   usernameError,
   savingUsername,
+  onEditNote,
+  onDeleteNote,
 }) {
   return (
     <Page>
@@ -31,7 +33,12 @@ export function ProfileView({
           {editable ? "your notes" : "notes"}
         </h2>
 
-        <NotesGrid notes={notes} editable={editable} />
+        <NotesGrid
+          notes={notes}
+          editable={editable}
+          onEditNote={onEditNote}
+          onDeleteNote={onDeleteNote}
+        />
       </div>
     </Page>
   );

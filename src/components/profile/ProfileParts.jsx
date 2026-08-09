@@ -297,7 +297,7 @@ export function NoteCard({ note, editable, onOpen, onEdit, onDelete }) {
   );
 }
 
-export function NotesGrid({ notes, editable }) {
+export function NotesGrid({ notes, editable, onEditNote, onDeleteNote }) {
   return (
     <div
       className="
@@ -306,7 +306,13 @@ export function NotesGrid({ notes, editable }) {
       "
     >
       {notes.map((note) => (
-        <NoteCard key={note.id ?? note.code} note={note} editable={editable} />
+        <NoteCard
+          key={note.id ?? note.code}
+          note={note}
+          editable={editable}
+          onEdit={() => onEditNote?.(note)}
+          onDelete={() => onDeleteNote?.(note)}
+        />
       ))}
     </div>
   );
