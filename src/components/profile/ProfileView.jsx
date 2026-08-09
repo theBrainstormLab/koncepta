@@ -8,6 +8,9 @@ export function ProfileView({
   email,
   onCreateNote,
   onLogout,
+  onUsernameChange,
+  usernameError,
+  savingUsername,
 }) {
   return (
     <Page>
@@ -18,6 +21,9 @@ export function ProfileView({
         email={email}
         onCreateNote={onCreateNote}
         onLogout={onLogout}
+        onUsernameChange={onUsernameChange}
+        usernameError={usernameError}
+        savingUsername={savingUsername}
       />
 
       <div className="mt-7">

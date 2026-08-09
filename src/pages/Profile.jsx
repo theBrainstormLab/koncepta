@@ -72,6 +72,46 @@ async function fetchUserById(userId) {
   return data;
 }
 
+const USERNAME_PATTERN = /^[a-zA-Z0-9_]{3,50}$/;
+
+async function changeUsername(userId, nextUsername) {
+  const trimmed = nextUsername.trim();
+
+  if (!USERNAME_PATTERN.test(trimmed)) {
+    return {
+      error:
+        "Username must be 3-50 characters (letters, numbers, underscores only).",
+    };
+  }
+
+  const { data, error } = await supabase
+    .from("users")
+    .update({ username: trimmed })
+    .eq("id", userId)
+    .select("id, username, email")
+    .single();
+
+  if (error) {
+    console.error("Failed to change username:", error);
+
+    if (error.code === "23505") {
+      return { error: "That username is already taken." };
+    }
+
+    return { error: "Something went wrong. Try again." };
+  }
+
+  const { error: metaError } = await supabase.auth.updateUser({
+    data: { username: trimmed },
+  });
+
+  if (metaError) {
+    console.error("Failed to sync auth metadata:", metaError);
+  }
+
+  return { data };
+}
+
 async function fetchUserByUsername(username) {
   const { data, error } = await supabase
     .from("users")
@@ -97,6 +137,8 @@ export default function Profile() {
 
   const [profile, setProfile] = useState(null);
   const [notes, setNotes] = useState([]);
+  const [usernameError, setUsernameError] = useState("");
+  const [savingUsername, setSavingUsername] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -198,6 +240,25 @@ export default function Profile() {
     };
   }, [username]);
 
+  const handleUsernameChange = async (nextUsername) => {
+    if (!profile) return;
+
+    setSavingUsername(true);
+    setUsernameError("");
+
+    const { data, error } = await changeUsername(profile.id, nextUsername);
+
+    setSavingUsername(false);
+
+    if (error) {
+      setUsernameError(error);
+      return false;
+    }
+
+    setProfile(data);
+    return true;
+  };
+
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
 
@@ -241,6 +302,9 @@ export default function Profile() {
       editable
       onCreateNote={() => setScreen(SCREENS.EDITOR)}
       onLogout={handleLogout}
+      onUsernameChange={handleUsernameChange}
+      usernameError={usernameError}
+      savingUsername={savingUsername}
     />
   );
 }

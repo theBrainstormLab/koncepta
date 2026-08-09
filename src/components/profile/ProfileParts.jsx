@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Icon } from "@iconify-icon/react";
 
 export function Page({ children }) {
@@ -59,6 +60,92 @@ export function Avatar({ username }) {
   );
 }
 
+function EditableUsername({
+  username,
+  onUsernameChange,
+  usernameError,
+  savingUsername,
+}) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(username);
+
+  const startEditing = () => {
+    setDraft(username);
+    setEditing(true);
+  };
+
+  const cancel = () => {
+    setDraft(username);
+    setEditing(false);
+  };
+
+  const submit = async (e) => {
+    e.preventDefault();
+    if (!onUsernameChange || draft.trim() === username) {
+      setEditing(false);
+      return;
+    }
+
+    const ok = await onUsernameChange(draft);
+    if (ok) setEditing(false);
+  };
+
+  if (!editing) {
+    return (
+      <div className="flex items-center gap-2">
+        <h1 className="font-[Poppins-Bold] text-3xl font-bold leading-none">
+          {username}
+        </h1>
+        {onUsernameChange && (
+          <IconButton
+            icon="ri:edit-line"
+            width={15}
+            label="Change username"
+            onClick={startEditing}
+            className="cursor-pointer text-[var(--color-text-secondary)] transition hover:text-[var(--color-text)]"
+          />
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={submit} className="flex flex-col gap-1.5">
+      <div className="flex items-center gap-2">
+        <input
+          autoFocus
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          disabled={savingUsername}
+          className="
+            h-9 w-[200px] rounded-[8px] border border-[var(--color-border)]
+            bg-transparent px-3 font-[Poppins-Bold] text-lg outline-none
+            transition focus:border-[var(--color-text)]
+          "
+        />
+
+        <IconButton
+          icon="ri:check-line"
+          width={18}
+          label="Save username"
+          onClick={submit}
+          className="cursor-pointer text-[var(--color-text-secondary)] transition hover:text-[var(--color-text)]"
+        />
+
+        <IconButton
+          icon="ri:close-line"
+          width={18}
+          label="Cancel"
+          onClick={cancel}
+          className="cursor-pointer text-[var(--color-text-secondary)] transition hover:text-[var(--color-text)]"
+        />
+      </div>
+
+      {usernameError && <p className="text-xs text-red-500">{usernameError}</p>}
+    </form>
+  );
+}
+
 export function ProfileHeader({
   username,
   notesCount,
@@ -66,6 +153,9 @@ export function ProfileHeader({
   email = "shaaanuu@example.com",
   onCreateNote,
   onLogout,
+  onUsernameChange,
+  usernameError,
+  savingUsername,
 }) {
   return (
     <div className="flex items-center justify-between gap-6">
@@ -73,9 +163,18 @@ export function ProfileHeader({
         <Avatar username={username} />
 
         <div className="min-w-0">
-          <h1 className="font-[Poppins-Bold] text-3xl font-bold leading-none">
-            {username}
-          </h1>
+          {editable ? (
+            <EditableUsername
+              username={username}
+              onUsernameChange={onUsernameChange}
+              usernameError={usernameError}
+              savingUsername={savingUsername}
+            />
+          ) : (
+            <h1 className="font-[Poppins-Bold] text-3xl font-bold leading-none">
+              {username}
+            </h1>
+          )}
 
           {editable ? (
             <>
