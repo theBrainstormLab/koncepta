@@ -112,6 +112,67 @@ async function changeUsername(userId, nextUsername) {
   return { data };
 }
 
+async function fetchModules() {
+  const { data, error } = await supabase
+    .from("modules")
+    .select(
+      `
+      id,
+      title,
+      course:courses (
+        id,
+        title,
+        code,
+        degree:degrees (
+          id,
+          name
+        )
+      )
+    `,
+    )
+    .order("title", { ascending: true });
+
+  if (error) {
+    console.error("Failed to fetch modules:", error);
+    return [];
+  }
+
+  return (data ?? []).map((mod) => ({
+    id: mod.id,
+    title: mod.title,
+    courseCode: mod.course?.code ?? "",
+    courseTitle: mod.course?.title ?? "",
+    degreeName: mod.course?.degree?.name ?? "",
+  }));
+}
+
+async function createNote({ authorId, moduleId, title, content }) {
+  const trimmedTitle = title.trim();
+  const trimmedContent = content.trim();
+
+  if (!trimmedTitle) return { error: "Give your note a title first." };
+  if (!moduleId) return { error: "Pick a module for this note." };
+  if (!trimmedContent) return { error: "Your note is empty." };
+
+  const { data, error } = await supabase
+    .from("notes")
+    .insert({
+      author_id: authorId,
+      module_id: moduleId,
+      title: trimmedTitle,
+      content: trimmedContent,
+    })
+    .select("id")
+    .single();
+
+  if (error) {
+    console.error("Failed to create note:", error);
+    return { error: "Couldn't publish your note. Try again." };
+  }
+
+  return { data };
+}
+
 async function fetchUserByUsername(username) {
   const { data, error } = await supabase
     .from("users")
@@ -139,6 +200,10 @@ export default function Profile() {
   const [notes, setNotes] = useState([]);
   const [usernameError, setUsernameError] = useState("");
   const [savingUsername, setSavingUsername] = useState(false);
+  const [modules, setModules] = useState([]);
+  const [modulesLoading, setModulesLoading] = useState(false);
+  const [publishing, setPublishing] = useState(false);
+  const [publishError, setPublishError] = useState("");
 
   useEffect(() => {
     let active = true;
@@ -259,6 +324,43 @@ export default function Profile() {
     return true;
   };
 
+  const handleOpenEditor = async () => {
+    setPublishError("");
+    setModulesLoading(true);
+
+    const moduleList = await fetchModules();
+
+    setModules(moduleList);
+    setModulesLoading(false);
+    setScreen(SCREENS.EDITOR);
+  };
+
+  const handlePublish = async (draft) => {
+    if (!profile) return false;
+
+    setPublishing(true);
+    setPublishError("");
+
+    const { error } = await createNote({
+      authorId: profile.id,
+      moduleId: draft.moduleId,
+      title: draft.title,
+      content: draft.body,
+    });
+
+    setPublishing(false);
+
+    if (error) {
+      setPublishError(error);
+      return false;
+    }
+
+    const userNotes = await fetchNotesByAuthorId(profile.id);
+    setNotes(userNotes);
+    setScreen(SCREENS.OVERVIEW);
+    return true;
+  };
+
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
 
@@ -287,9 +389,13 @@ export default function Profile() {
   if (screen === SCREENS.EDITOR) {
     return (
       <EditorView
+        userId={profile?.id}
+        modules={modules}
+        modulesLoading={modulesLoading}
         onBack={() => setScreen(SCREENS.OVERVIEW)}
-        onSaveDraft={(draft) => console.log("draft", draft)}
-        onPublish={(draft) => console.log("publish", draft)}
+        onPublish={handlePublish}
+        publishing={publishing}
+        publishError={publishError}
       />
     );
   }
@@ -300,7 +406,7 @@ export default function Profile() {
       email={profile?.email}
       notes={notes}
       editable
-      onCreateNote={() => setScreen(SCREENS.EDITOR)}
+      onCreateNote={handleOpenEditor}
       onLogout={handleLogout}
       onUsernameChange={handleUsernameChange}
       usernameError={usernameError}
