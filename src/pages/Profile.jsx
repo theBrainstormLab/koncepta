@@ -112,6 +112,32 @@ async function changeUsername(userId, nextUsername) {
   return { data };
 }
 
+async function fetchCourses() {
+  const { data, error } = await supabase
+    .from("courses")
+    .select(
+      `
+      id,
+      title,
+      code,
+      degree:degrees ( id, name )
+    `,
+    )
+    .order("code", { ascending: true });
+
+  if (error) {
+    console.error("Failed to fetch courses:", error);
+    return [];
+  }
+
+  return (data ?? []).map((course) => ({
+    id: course.id,
+    code: course.code,
+    title: course.title,
+    degreeName: course.degree?.name ?? "",
+  }));
+}
+
 async function fetchModules() {
   const { data, error } = await supabase
     .from("modules")
@@ -119,6 +145,7 @@ async function fetchModules() {
       `
       id,
       title,
+      course_id,
       course:courses (
         id,
         title,
@@ -140,16 +167,58 @@ async function fetchModules() {
   return (data ?? []).map((mod) => ({
     id: mod.id,
     title: mod.title,
+    courseId: mod.course_id,
     courseCode: mod.course?.code ?? "",
     courseTitle: mod.course?.title ?? "",
     degreeName: mod.course?.degree?.name ?? "",
   }));
 }
 
+async function ensureModuleId(courseId, moduleTitle) {
+  const trimmed = moduleTitle.trim();
+
+  if (!courseId) return { error: "Pick a paper first." };
+  if (!trimmed) return { error: "Give the topic a name." };
+
+  const { data: existing, error: findError } = await supabase
+    .from("modules")
+    .select("id")
+    .eq("course_id", courseId)
+    .ilike("title", trimmed)
+    .maybeSingle();
+
+  if (findError) {
+    console.error("Failed to look up module:", findError);
+    return { error: "Something went wrong. Try again." };
+  }
+
+  if (existing) return { data: existing.id };
+
+  const { data: created, error: createError } = await supabase
+    .from("modules")
+    .insert({ course_id: courseId, title: trimmed })
+    .select("id")
+    .single();
+
+  if (createError) {
+    console.error("Failed to create module:", createError);
+    return { error: "Couldn't create that topic. Try again." };
+  }
+
+  return { data: created.id };
+}
+
 async function fetchNoteById(noteId) {
   const { data, error } = await supabase
     .from("notes")
-    .select("id, title, content, module_id")
+    .select(
+      `
+      id,
+      title,
+      content,
+      module:modules ( id, title, course_id )
+    `,
+    )
     .eq("id", noteId)
     .single();
 
@@ -255,6 +324,7 @@ export default function Profile() {
   const [usernameError, setUsernameError] = useState("");
   const [savingUsername, setSavingUsername] = useState(false);
   const [modules, setModules] = useState([]);
+  const [courses, setCourses] = useState([]);
   const [modulesLoading, setModulesLoading] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [publishError, setPublishError] = useState("");
@@ -384,8 +454,12 @@ export default function Profile() {
     setEditingNote(null);
     setModulesLoading(true);
 
-    const moduleList = await fetchModules();
+    const [courseList, moduleList] =
+      courses.length > 0 && modules.length > 0
+        ? [courses, modules]
+        : await Promise.all([fetchCourses(), fetchModules()]);
 
+    setCourses(courseList);
     setModules(moduleList);
     setModulesLoading(false);
     setScreen(SCREENS.EDITOR);
@@ -395,11 +469,13 @@ export default function Profile() {
     setPublishError("");
     setModulesLoading(true);
 
-    const [moduleList, fullNote] = await Promise.all([
+    const [courseList, moduleList, fullNote] = await Promise.all([
+      courses.length > 0 ? Promise.resolve(courses) : fetchCourses(),
       modules.length > 0 ? Promise.resolve(modules) : fetchModules(),
       fetchNoteById(note.id),
     ]);
 
+    setCourses(courseList);
     setModules(moduleList);
     setModulesLoading(false);
 
@@ -435,16 +511,27 @@ export default function Profile() {
     setPublishing(true);
     setPublishError("");
 
+    const { data: moduleId, error: moduleError } = await ensureModuleId(
+      draft.courseId,
+      draft.moduleTitle,
+    );
+
+    if (moduleError) {
+      setPublishing(false);
+      setPublishError(moduleError);
+      return false;
+    }
+
     const { error } = draft.noteId
       ? await updateNote({
           noteId: draft.noteId,
-          moduleId: draft.moduleId,
+          moduleId,
           title: draft.title,
           content: draft.body,
         })
       : await createNote({
           authorId: profile.id,
-          moduleId: draft.moduleId,
+          moduleId,
           title: draft.title,
           content: draft.body,
         });
@@ -494,8 +581,10 @@ export default function Profile() {
         userId={profile?.id}
         noteId={editingNote?.id ?? null}
         initialTitle={editingNote?.title ?? ""}
-        initialModuleId={editingNote?.module_id ?? ""}
+        initialCourseId={editingNote?.module?.course_id ?? ""}
+        initialModuleTitle={editingNote?.module?.title ?? ""}
         initialBody={editingNote?.content ?? ""}
+        courses={courses}
         modules={modules}
         modulesLoading={modulesLoading}
         onBack={() => {

@@ -43,9 +43,10 @@ export function EditorView({
   userId,
   noteId = null,
   initialTitle = "",
-  initialModuleId = "",
+  initialCourseId = "",
+  initialModuleTitle = "",
   initialBody = "",
-  modules = [],
+  courses = [],
   modulesLoading = false,
   onBack,
   onPublish,
@@ -55,7 +56,8 @@ export function EditorView({
   const isEditing = Boolean(noteId);
 
   const [title, setTitle] = useState(initialTitle);
-  const [moduleId, setModuleId] = useState(initialModuleId);
+  const [courseId, setCourseId] = useState(initialCourseId);
+  const [moduleTitle, setModuleTitle] = useState(initialModuleTitle);
   const [body, setBody] = useState(initialBody);
   const [restoredNotice, setRestoredNotice] = useState(false);
   const [draftSavedNotice, setDraftSavedNotice] = useState(false);
@@ -68,19 +70,20 @@ export function EditorView({
     if (!draft) return;
 
     setTitle(draft.title ?? "");
-    setModuleId(draft.moduleId ?? "");
+    setCourseId(draft.courseId ?? "");
+    setModuleTitle(draft.moduleTitle ?? "");
     setBody(draft.body ?? "");
     setRestoredNotice(true);
   }, [userId, isEditing]);
 
-  // Default the module select once modules load in, if nothing's chosen yet.
+  // Default the course select once courses load in, if nothing's chosen yet.
   useEffect(() => {
-    if (!moduleId && modules.length > 0) {
-      setModuleId(modules[0].id);
+    if (!courseId && courses.length > 0) {
+      setCourseId(courses[0].id);
     }
-  }, [modules, moduleId]);
+  }, [courses, courseId]);
 
-  const draft = { noteId, title, moduleId, body };
+  const draft = { noteId, title, courseId, moduleTitle, body };
 
   const handleSaveDraft = () => {
     saveDraft(userId, draft);
@@ -92,7 +95,8 @@ export function EditorView({
   const handleDiscardDraft = () => {
     clearDraft(userId);
     setTitle("");
-    setModuleId(modules[0]?.id ?? "");
+    setCourseId(courses[0]?.id ?? "");
+    setModuleTitle("");
     setBody("");
     setRestoredNotice(false);
   };
@@ -123,7 +127,7 @@ export function EditorView({
         </div>
       )}
 
-      <div className="mt-8 grid gap-4 md:grid-cols-2">
+      <div className="mt-8 grid gap-4 md:grid-cols-3">
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
@@ -140,10 +144,13 @@ export function EditorView({
         />
 
         <select
-          value={moduleId}
-          onChange={(e) => setModuleId(e.target.value)}
-          disabled={modulesLoading || modules.length === 0}
-          aria-label="Module"
+          value={courseId}
+          onChange={(e) => {
+            setCourseId(e.target.value);
+            setModuleTitle("");
+          }}
+          disabled={modulesLoading || courses.length === 0}
+          aria-label="Paper"
           className="
             h-[48px] rounded-[14px]
             border border-[var(--color-border)]
@@ -153,21 +160,38 @@ export function EditorView({
             disabled:opacity-50
           "
         >
-          {modulesLoading && <option>loading modules...</option>}
+          {modulesLoading && <option>loading papers...</option>}
 
-          {!modulesLoading && modules.length === 0 && (
-            <option>no modules available</option>
+          {!modulesLoading && courses.length === 0 && (
+            <option>no papers available</option>
           )}
 
           {!modulesLoading &&
-            modules.map((mod) => (
-              <option key={mod.id} value={mod.id}>
-                {mod.courseCode
-                  ? `${mod.courseCode} · ${mod.title}`
-                  : mod.title}
+            courses.map((course) => (
+              <option key={course.id} value={course.id}>
+                {course.code} · {course.title}
               </option>
             ))}
         </select>
+
+        <div>
+          <input
+            value={moduleTitle}
+            onChange={(e) => setModuleTitle(e.target.value)}
+            disabled={modulesLoading || !courseId}
+            placeholder="topic (e.g. LinkedList)..."
+            aria-label="Topic"
+            className="
+              h-[48px] w-full rounded-[14px]
+              border border-[var(--color-border)]
+              bg-transparent px-4 text-sm
+              outline-none
+              placeholder:text-[var(--color-text-secondary)]
+              focus:border-[var(--color-text)]
+              disabled:opacity-50
+            "
+          />
+        </div>
       </div>
 
       <div className="mt-4 grid items-start gap-4 xl:grid-cols-2">
