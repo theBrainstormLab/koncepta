@@ -287,7 +287,7 @@ export function NoteCard({ note, editable, onOpen, onEdit, onDelete }) {
           ) : (
             <IconButton
               icon="ri:arrow-right-up-line"
-              label={`Open ${note.title}`}
+              label={`Open ${note.moduleTitle}`}
               onClick={onOpen ?? noop}
             />
           )}
