@@ -17,7 +17,7 @@ function Modules() {
       try {
         const { data, error } = await supabase
           .from("modules")
-          .select("id, title, created_at")
+          .select("id, title, created_at, verified")
           .eq("course_id", course.id);
 
         if (error) throw error;
@@ -82,9 +82,17 @@ function Modules() {
                 {mod.title}
               </h3>
 
-              <p className="text-[14px] mb-4 w-full box-border break-words m-0 max-[480px]:text-[13px]">
-                {course.code}
-              </p>
+              <div className="mb-4 flex items-center gap-1 text-[12px]">
+                <Icon
+                  icon={
+                    mod.verified
+                      ? "ri:verified-badge-line"
+                      : "ri:close-circle-line"
+                  }
+                  width="16"
+                />
+                <span>{mod.verified ? "Verified" : "Not verified"}</span>
+              </div>
 
               <div className="flex items-center text-[0.75rem] opacity-75 w-full box-border max-[480px]:text-[0.7rem]">
                 <Icon icon="ri:pen-nib-line" className="mr-[7px]" />

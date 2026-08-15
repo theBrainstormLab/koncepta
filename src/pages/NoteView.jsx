@@ -6,6 +6,16 @@ import { supabase } from "../utils/supabase";
 import Markdown from "../components/Markdown";
 import NoteViewSkeleton from "../components/NoteViewSkeleton";
 
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
+
 export default function NoteView() {
   const { state } = useLocation();
   const { course, module } = state;
