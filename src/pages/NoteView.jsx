@@ -24,7 +24,6 @@ export default function NoteView() {
           .select(
             `
             id,
-            title,
             content,
             created_at,
             updated_at,
@@ -168,7 +167,7 @@ export default function NoteView() {
         ) : (
           <>
             <h1 className="font-[DynaPuff] font-bold text-shadow-[var(--shadow-text)] text-4xl tracking-[0.05em]">
-              {selectedNote.title}
+              {module.title}
             </h1>
 
             <div className="h-px bg-[var(--color-text)] opacity-15 mt-1"></div>
@@ -204,7 +203,7 @@ export default function NoteView() {
       </div>
 
       {/* chatbot */}
-      <div className="flex flex-col gap-6 pt-1 mx-3 sticky top-6 h-fit">  
+      <div className="flex flex-col gap-6 pt-1 mx-3 sticky top-6 h-fit">
         <div className="flex justify-end">
           <div
             className="bg-[var(--color-bg-secondary)] w-9 h-9 rounded-[10px] flex items-center justify-center cursor-pointer"
