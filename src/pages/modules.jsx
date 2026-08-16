@@ -5,6 +5,15 @@ import { supabase } from "../utils/supabase";
 import CardSkeleton from "../components/CardSkeleton";
 import CardGrid from "../components/CardGrid";
 
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
 function Modules() {
   const [query, setQuery] = useState("");
   const [modules, setModules] = useState([]);
@@ -37,6 +46,8 @@ function Modules() {
   );
 
   return (
+    <>
+      <ScrollToTop />
     <div className="min-h-[100svh] mt-0 md:mt-10 md:min-h-[calc(100svh-235.4px)] ">
       <div className="min-h-[100svh] sm:min-h-[100svh] md:min-h-0 flex flex-col justify-center md:justify-start">
         <h1 className="text-center mt-4 sm:mt-4 md:mt-0 font-['DynaPuff'] text-[36px] font-bold tracking-[1px] text-[var(--color-text)] text-shadow-[var(--shadow-text)]">
@@ -103,6 +114,7 @@ function Modules() {
         </CardGrid>
       )}
     </div>
+    </>
   );
 }
 
