@@ -17,7 +17,8 @@ function Modules() {
       try {
         const { data, error } = await supabase
           .from("modules")
-          .select("id, title, created_at, verified")
+          .select(
+            'id, title, created_at, verified, notes (author:users!notes_author_id_fkey (username))')
           .eq("course_id", course.id);
 
         if (error) throw error;
@@ -96,7 +97,7 @@ function Modules() {
 
               <div className="flex items-center text-[0.75rem] opacity-75 w-full box-border max-[480px]:text-[0.7rem]">
                 <Icon icon="ri:pen-nib-line" className="mr-[7px]" />
-                {course.title}
+                {mod.notes?.[0]?.author?.username ?? "Unknown"}
               </div>
             </div>
           ))}
