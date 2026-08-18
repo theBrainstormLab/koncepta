@@ -42,7 +42,6 @@ function clearDraft(userId) {
 export function EditorView({
   userId,
   noteId = null,
-  initialTitle = "",
   initialCourseId = "",
   initialModuleTitle = "",
   initialBody = "",
@@ -55,7 +54,6 @@ export function EditorView({
 }) {
   const isEditing = Boolean(noteId);
 
-  const [title, setTitle] = useState(initialTitle);
   const [courseId, setCourseId] = useState(initialCourseId);
   const [moduleTitle, setModuleTitle] = useState(initialModuleTitle);
   const [body, setBody] = useState(initialBody);
@@ -69,7 +67,6 @@ export function EditorView({
     const draft = loadDraft(userId);
     if (!draft) return;
 
-    setTitle(draft.title ?? "");
     setCourseId(draft.courseId ?? "");
     setModuleTitle(draft.moduleTitle ?? "");
     setBody(draft.body ?? "");
@@ -83,7 +80,7 @@ export function EditorView({
     }
   }, [courses, courseId]);
 
-  const draft = { noteId, title, courseId, moduleTitle, body };
+  const draft = { noteId, courseId, moduleTitle, body };
 
   const handleSaveDraft = () => {
     saveDraft(userId, draft);
@@ -94,7 +91,6 @@ export function EditorView({
 
   const handleDiscardDraft = () => {
     clearDraft(userId);
-    setTitle("");
     setCourseId(courses[0]?.id ?? "");
     setModuleTitle("");
     setBody("");
@@ -127,21 +123,7 @@ export function EditorView({
         </div>
       )}
 
-      <div className="mt-8 grid gap-4 md:grid-cols-3">
-        <input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="note title..."
-          aria-label="Note title"
-          className="
-            h-[48px] rounded-[14px]
-            border border-[var(--color-border)]
-            bg-transparent px-4 text-sm
-            outline-none
-            placeholder:text-[var(--color-text-secondary)]
-            focus:border-[var(--color-text)]
-          "
-        />
+      <div className="mt-8 grid gap-4 md:grid-cols-2">
 
         <select
           value={courseId}
@@ -179,7 +161,7 @@ export function EditorView({
             value={moduleTitle}
             onChange={(e) => setModuleTitle(e.target.value)}
             disabled={modulesLoading || !courseId}
-            placeholder="topic (e.g. LinkedList)..."
+            placeholder="Name of Module."
             aria-label="Topic"
             className="
               h-[48px] w-full rounded-[14px]

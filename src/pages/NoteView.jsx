@@ -6,6 +6,15 @@ import { supabase } from "../utils/supabase";
 import Markdown from "../components/Markdown";
 import NoteViewSkeleton from "../components/NoteViewSkeleton";
 
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
 const isMobile = () => typeof window !== "undefined" && window.innerWidth < 640;
 
 export default function NoteView() {
@@ -27,7 +36,6 @@ export default function NoteView() {
           .select(
             `
             id,
-            title,
             content,
             created_at,
             updated_at,
@@ -203,7 +211,7 @@ export default function NoteView() {
         ) : (
           <>
             <h1 className="font-[DynaPuff] font-bold text-shadow-[var(--shadow-text)] text-4xl tracking-[0.05em]">
-              {selectedNote.title}
+              {module.title}
             </h1>
 
             <div className="h-px bg-[var(--color-text)] opacity-15 mt-1"></div>

@@ -7,7 +7,7 @@ function mapNotes(rows) {
 
     return {
       id: note.id,
-      title: note.title,
+      moduleTitle: note.module?.title ?? "—",
       code: course?.code ?? note.module?.title ?? "—",
       course: degree?.name
         ? `${degree.name} · ${course.title}`
@@ -22,7 +22,6 @@ export async function fetchNotesByAuthorId(authorId) {
     .select(
       `
       id,
-      title,
       created_at,
       module:modules (
         id,
@@ -56,7 +55,6 @@ export async function fetchNoteById(noteId) {
     .select(
       `
       id,
-      title,
       content,
       module:modules ( id, title, course_id )
     `,
@@ -72,11 +70,9 @@ export async function fetchNoteById(noteId) {
   return data;
 }
 
-export async function createNote({ authorId, moduleId, title, content }) {
-  const trimmedTitle = title.trim();
+export async function createNote({ authorId, moduleId, content }) {
   const trimmedContent = content.trim();
 
-  if (!trimmedTitle) return { error: "Give your note a title first." };
   if (!moduleId) return { error: "Pick a module for this note." };
   if (!trimmedContent) return { error: "Your note is empty." };
 
@@ -85,7 +81,6 @@ export async function createNote({ authorId, moduleId, title, content }) {
     .insert({
       author_id: authorId,
       module_id: moduleId,
-      title: trimmedTitle,
       content: trimmedContent,
     })
     .select("id")
@@ -99,11 +94,9 @@ export async function createNote({ authorId, moduleId, title, content }) {
   return { data };
 }
 
-export async function updateNote({ noteId, moduleId, title, content }) {
-  const trimmedTitle = title.trim();
+export async function updateNote({ noteId, moduleId, content }) {
   const trimmedContent = content.trim();
 
-  if (!trimmedTitle) return { error: "Give your note a title first." };
   if (!moduleId) return { error: "Pick a module for this note." };
   if (!trimmedContent) return { error: "Your note is empty." };
 
@@ -111,7 +104,6 @@ export async function updateNote({ noteId, moduleId, title, content }) {
     .from("notes")
     .update({
       module_id: moduleId,
-      title: trimmedTitle,
       content: trimmedContent,
       updated_at: new Date().toISOString(),
     })

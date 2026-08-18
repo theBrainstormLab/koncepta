@@ -259,7 +259,7 @@ export function NoteCard({ note, editable, onOpen, onEdit, onDelete }) {
         transition duration-200 hover:-translate-y-[2px] hover:shadow-[var(--shadow-box-hover)]
       "
     >
-      <h3 className="font-[Poppins-Bold] text-[15px]">{note.title}</h3>
+      <h3 className="font-[Poppins-Bold] text-[15px]">{note.moduleTitle}</h3>
       <p className="mt-1 text-sm text-[var(--color-text-secondary)]">
         {note.code}
       </p>
@@ -275,19 +275,19 @@ export function NoteCard({ note, editable, onOpen, onEdit, onDelete }) {
             <>
               <IconButton
                 icon="ri:edit-line"
-                label={`Edit ${note.title}`}
+                label={`Edit ${note.moduleTitle}`}
                 onClick={onEdit ?? noop}
               />
               <IconButton
                 icon="ri:delete-bin-line"
-                label={`Delete ${note.title}`}
+                label={`Delete ${note.moduleTitle}`}
                 onClick={onDelete ?? noop}
               />
             </>
           ) : (
             <IconButton
               icon="ri:arrow-right-up-line"
-              label={`Open ${note.title}`}
+              label={`Open ${note.moduleTitle}`}
               onClick={onOpen ?? noop}
             />
           )}

@@ -5,6 +5,15 @@ import { supabase } from "../utils/supabase";
 import CardSkeleton from "../components/CardSkeleton";
 import CardGrid from "../components/CardGrid";
 
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
 function Modules() {
   const [query, setQuery] = useState("");
   const [modules, setModules] = useState([]);
@@ -17,7 +26,7 @@ function Modules() {
       try {
         const { data, error } = await supabase
           .from("modules")
-          .select("id, title, created_at")
+          .select("id, title, created_at, verified")
           .eq("course_id", course.id);
 
         if (error) throw error;
@@ -37,6 +46,8 @@ function Modules() {
   );
 
   return (
+    <>
+      <ScrollToTop />
     <div className="min-h-[100svh] mt-0 md:mt-10 md:min-h-[calc(100svh-235.4px)] ">
       <div className="min-h-[100svh] sm:min-h-[100svh] md:min-h-0 flex flex-col justify-center md:justify-start">
         <h1 className="text-center mt-4 sm:mt-4 md:mt-0 font-['DynaPuff'] text-[36px] font-bold tracking-[1px] text-[var(--color-text)] text-shadow-[var(--shadow-text)]">
@@ -82,9 +93,17 @@ function Modules() {
                 {mod.title}
               </h3>
 
-              <p className="text-[14px] mb-4 w-full box-border break-words m-0 max-[480px]:text-[13px]">
-                {course.code}
-              </p>
+              <div className="mb-4 flex items-center gap-1 text-[12px]">
+                <Icon
+                  icon={
+                    mod.verified
+                      ? "ri:verified-badge-line"
+                      : "ri:close-circle-line"
+                  }
+                  width="16"
+                />
+                <span>{mod.verified ? "Verified" : "Not verified"}</span>
+              </div>
 
               <div className="flex items-center text-[0.75rem] opacity-75 w-full box-border max-[480px]:text-[0.7rem]">
                 <Icon icon="ri:pen-nib-line" className="mr-[7px]" />
@@ -95,6 +114,7 @@ function Modules() {
         </CardGrid>
       )}
     </div>
+    </>
   );
 }
 
