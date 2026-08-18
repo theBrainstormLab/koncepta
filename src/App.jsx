@@ -7,6 +7,7 @@ import NotFound from "./pages/NotFound";
 import Modules from "./pages/modules";
 import NoteView from "./pages/NoteView";
 import About from "./pages/about";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
@@ -18,7 +19,8 @@ function App() {
         <Route path="/modules" element={<Modules />} />
         <Route path="/note-view" element={<NoteView />} />
         <Route path="/about" element={<About />} />
-        {/* <Route path="/about" element={<About />} /> */}
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile/:username" element={<Profile />} />
       </Routes>
       <Footer />
     </>

@@ -1,6 +1,7 @@
 # Database schema
 
-Six tables in Supabase.
+Six tables in Supabase. All have Row Level Security enabled (see the
+RLS notes under each table below).
 
 ## degrees
 
@@ -15,6 +16,8 @@ create table degrees (
   name text not null
 );
 ```
+
+**RLS:** public read only. Admin-managed, nothing in the app writes here.
 
 ## courses
 
@@ -36,7 +39,12 @@ create table courses (
 );
 ```
 
+**RLS:** public read only. Admin-managed, nothing in the app writes here.
+
 ## modules
+
+Represents a topic within a course (e.g. "LinkedList" under "CS201 · DSA").
+Multiple modules per course is expected and normal.
 
 | column     | type                     |
 | ---------- | ------------------------ |
@@ -53,6 +61,10 @@ create table modules (
   created_at timestamp with time zone default now()
 );
 ```
+
+**RLS:** public read; any signed-in user can insert (the note editor
+creates a module on the fly when you type a new topic name -> see
+`ensureModuleId` in `src/api/modules.js`). No update/delete policy yet.
 
 ## notes
 
@@ -78,7 +90,10 @@ create table notes (
 );
 ```
 
-## note_contributors
+**RLS:** public read; insert/update/delete restricted to
+`auth.uid() = author_id`.
+
+## note_contributors *(currently not in the app yet)*
 
 Join table, tracks who else contributed to a note besides the original author.
 
@@ -95,7 +110,15 @@ create table note_contributors (
 );
 ```
 
+**RLS:** public read only. No insert/update/delete policy until the
+collaborative-notes feature is actually built.
+
 ## users
+
+Populated automatically on signup by a trigger
+(`handle_new_user`, fires `after insert on auth.users`) -> this table is
+never written to directly from client code except for username changes.
+New users get a random username (e.g. `Rusty_Falcon_0417`).
 
 | column     | type      |
 | ---------- | --------- |
@@ -112,3 +135,8 @@ create table users (
   created_at timestamp with time zone default now()
 );
 ```
+
+**RLS:** public read; update restricted to `auth.uid() = id` (used by
+the username-change flow). No client-side insert policy -> rows are only
+ever created by the `handle_new_user` trigger, which runs as
+`security definer` and bypasses RLS.
