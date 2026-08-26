@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { Icon } from "@iconify-icon/react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -123,6 +123,29 @@ export default function NoteView() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const overviewButtonRef = useRef(null);
+  const chatButtonRef = useRef(null);
+
+  useEffect(() => {
+    if (!showOverview && !showChat) return;
+
+    const handleKeyDown = (event) => {
+      if (event.key !== "Escape") return;
+
+      const fromOverview = showOverview;
+      const fromChat = showChat;
+      setShowOverview(false);
+      setShowChat(false);
+
+      if (fromOverview) overviewButtonRef.current?.focus();
+      else if (fromChat) chatButtonRef.current?.focus();
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [showOverview, showChat]);
+
   const toggleOverview = (e) => {
     e.stopPropagation();
    if (isMobile()) { setShowChat(false);}
@@ -150,12 +173,16 @@ export default function NoteView() {
       <header className="fixed top-0 left-0 right-0 h-16.5  px-4 flex items-center justify-between z-50 md:hidden"></header>
       {/* overview */}
       <div className="fixed top-5 left-5 z-50 sm:relative sm:top-6 sm:left-0 sm:z-auto sm:flex sm:flex-col sm:gap-6 sm:pt-1 sm:mx-3 sm:sticky sm:h-fit">
-        <div
+        <button
+          type="button"
+          ref={overviewButtonRef}
+          aria-expanded={showOverview}
+          aria-label={showOverview ? "Hide note outline" : "Show note outline"}
           className="bg-[var(--color-bg-secondary)] w-9 h-9 rounded-[10px] flex items-center justify-center cursor-pointer relative z-50 sm:static sm:z-auto"
           onClick={toggleOverview}
         >
           <Icon icon="ri:menu-4-line" width="22" height="22" />
-        </div>
+        </button>
 
         <AnimatePresence>
           {showOverview && (
@@ -292,12 +319,16 @@ export default function NoteView() {
       {/* chatbot */}
       <div className="fixed top-5 right-5 z-50 sm:relative md:top-6 sm:right-0 sm:z-auto sm:flex sm:flex-col sm:gap-6 sm:pt-1 sm:mx-3 sm:sticky sm:h-fit">
         <div className="flex justify-end">
-          <div
+          <button
+            type="button"
+            ref={chatButtonRef}
+            aria-expanded={showChat}
+            aria-label={showChat ? "Hide chat panel" : "Show chat panel"}
             className="bg-[var(--color-bg-secondary)] w-9 h-9 rounded-[10px] flex items-center justify-center cursor-pointer"
             onClick={toggleChat}
           >
             <Icon icon="ri:message-3-line" width="22" height="22" />
-          </div>
+          </button>
         </div>
         <AnimatePresence>
           {showChat && (
