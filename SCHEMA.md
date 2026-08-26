@@ -144,7 +144,11 @@ create table users (
 );
 ```
 
-**RLS:** public read; update restricted to `auth.uid() = id` (used by
+**RLS:** read access is restricted at the column level -- `anon` and
+`authenticated` may select only `id, username, created_at`; `email` is
+granted to no client role. A signed-in user's own email comes from the
+auth session (`supabase.auth.getUser()` / `session.user.email`), never
+from this table. Update restricted to `auth.uid() = id` (used by
 the username-change flow). No client-side insert policy -> rows are only
 ever created by the `handle_new_user` trigger, which runs as
 `security definer` and bypasses RLS.
