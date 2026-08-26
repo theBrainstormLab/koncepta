@@ -200,7 +200,7 @@ export default function Profile() {
 
   const handleDeleteNote = async (note) => {
     const confirmed = window.confirm(
-      `Delete "${note.title}"? This can't be undone.`,
+      `Delete "${note.moduleTitle}"? This can't be undone.`,
     );
     if (!confirmed) return;
 
@@ -236,13 +236,11 @@ export default function Profile() {
       ? await updateNote({
           noteId: draft.noteId,
           moduleId,
-          title: draft.title,
           content: draft.body,
         })
       : await createNote({
           authorId: profile.id,
           moduleId,
-          title: draft.title,
           content: draft.body,
         });
 
