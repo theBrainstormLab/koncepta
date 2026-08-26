@@ -125,7 +125,6 @@ export async function updateNote({ noteId, moduleId, content }) {
     .update({
       module_id: moduleId,
       content: trimmedContent,
-      updated_at: new Date().toISOString(),
     })
     .eq("id", noteId)
     .select("id")

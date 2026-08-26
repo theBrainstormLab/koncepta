@@ -27,7 +27,7 @@ create table degrees (
 | degree_id  | uuid, references degrees             |
 | title      | varchar                              |
 | code       | varchar, unique (`courses_code_key`) |
-| created_at | timestamp                            |
+| created_at | timestamptz                          |
 
 ```sql
 create table courses (
@@ -35,7 +35,7 @@ create table courses (
   degree_id uuid not null references degrees(id) on delete cascade,
   title varchar not null,
   code varchar not null,
-  created_at timestamp default now()
+  created_at timestamptz default now()
 );
 alter table courses add constraint courses_code_key unique (code);
 ```
@@ -55,7 +55,7 @@ Multiple modules per course is expected and normal.
 | id         | uuid                     |
 | course_id  | uuid, references courses |
 | title      | varchar                  |
-| created_at | timestamp                |
+| created_at | timestamptz              |
 | verified   | boolean, default false   |
 
 ```sql
@@ -63,7 +63,7 @@ create table modules (
   id uuid primary key default gen_random_uuid(),
   course_id uuid not null references courses(id) on delete cascade,
   title varchar not null,
-  created_at timestamp default now(),
+  created_at timestamptz default now(),
   verified boolean not null default false
 );
 -- case-insensitive uniqueness within a course; rejects duplicate topics
@@ -86,14 +86,14 @@ client; concurrent publishes are rejected by the index (`23505`). When
 historical duplicates were pruned, the oldest note (the original)
 survived per topic.
 
-| column     | type                     |
-| ---------- | ------------------------ |
-| id         | uuid                     |
-| module_id  | uuid, references modules |
-| author_id  | uuid, references users   |
-| content    | text                     |
-| created_at | timestamp                |
-| updated_at | timestamp                |
+| column     | type                       |
+| ---------- | -------------------------- |
+| id         | uuid                       |
+| module_id  | uuid, references modules   |
+| author_id  | uuid, references users     |
+| content    | text                       |
+| created_at | timestamptz                |
+| updated_at | timestamptz, DB-maintained |
 
 ```sql
 create table notes (
@@ -101,17 +101,20 @@ create table notes (
   module_id uuid not null references modules(id) on delete cascade,
   author_id uuid not null references users(id) on delete cascade,
   content text not null,
-  created_at timestamp default now(),
-  updated_at timestamp default now()
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
 );
 create unique index notes_module_id_unique on notes (module_id);
 ```
+
+`updated_at` is maintained by the `notes_set_updated_at` trigger (fires
+before update); client code never sets it.
 
 **RLS:** public read; insert/update/delete restricted to
 `auth.uid() = author_id`. Author-only editing is intentional until a
 contributor flow exists.
 
-## note*contributors *(currently not in the app yet)\_
+## note_contributors _(currently not in the app yet)_
 
 Join table, tracks who else contributed to a note besides the original author.
 
@@ -143,14 +146,14 @@ New users get a random username (e.g. `Rusty_Falcon_0417`).
 | id         | uuid            |
 | username   | varchar, unique |
 | email      | varchar, unique |
-| created_at | timestamp       |
+| created_at | timestamptz     |
 
 ```sql
 create table users (
   id uuid primary key default gen_random_uuid(),
   username varchar not null unique,
   email varchar not null unique,
-  created_at timestamp default now()
+  created_at timestamptz default now()
 );
 ```
 
