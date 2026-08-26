@@ -66,6 +66,11 @@ create table modules (
   created_at timestamp default now(),
   verified boolean not null default false
 );
+-- case-insensitive uniqueness within a course; rejects duplicate topics
+-- from concurrent publishes (handled by ensureModuleId in
+-- src/api/modules.js via the 23505 conflict path)
+create unique index modules_course_title_unique
+  on modules (course_id, lower(title));
 ```
 
 **RLS:** public read; any signed-in user can insert (the note editor
@@ -75,8 +80,11 @@ creates a module on the fly when you type a new topic name -> see
 
 ## notes
 
-Titles were removed from the product; the `title` column has been
-dropped. A note is content attached to a module.
+One shared note per topic: each module holds exactly one note, enforced
+by a unique index. Publishing to an occupied topic is blocked in the
+client; concurrent publishes are rejected by the index (`23505`). When
+historical duplicates were pruned, the oldest note (the original)
+survived per topic.
 
 | column     | type                     |
 | ---------- | ------------------------ |
@@ -96,10 +104,12 @@ create table notes (
   created_at timestamp default now(),
   updated_at timestamp default now()
 );
+create unique index notes_module_id_unique on notes (module_id);
 ```
 
 **RLS:** public read; insert/update/delete restricted to
-`auth.uid() = author_id`.
+`auth.uid() = author_id`. Author-only editing is intentional until a
+contributor flow exists.
 
 ## note*contributors *(currently not in the app yet)\_
 

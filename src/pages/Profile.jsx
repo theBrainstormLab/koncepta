@@ -16,6 +16,7 @@ import {
 import {
   fetchNotesByAuthorId,
   fetchNoteById,
+  fetchNoteByModuleId,
   createNote,
   updateNote,
   deleteNote,
@@ -229,6 +230,18 @@ export default function Profile() {
       setPublishing(false);
       setPublishError(moduleError);
       return false;
+    }
+
+    if (!draft.noteId) {
+      const existing = await fetchNoteByModuleId(moduleId);
+
+      if (existing) {
+        setPublishing(false);
+        setPublishError(
+          "That topic already has a note. Write something new or edit your own note from your profile.",
+        );
+        return false;
+      }
     }
 
     const { error } = draft.noteId

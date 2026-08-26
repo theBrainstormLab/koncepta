@@ -95,6 +95,25 @@ export async function ensureModuleId(courseId, moduleTitle) {
     .select("id")
     .single();
 
+  if (createError?.code === "23505") {
+    const { data: raced, error: racedError } = await supabase
+      .from("modules")
+      .select("id")
+      .eq("course_id", courseId)
+      .ilike("title", trimmed)
+      .maybeSingle();
+
+    if (racedError || !raced) {
+      console.error(
+        "Failed to re-select module after conflict:",
+        racedError ?? "not found",
+      );
+      return { error: "Couldn't create that topic. Try again." };
+    }
+
+    return { data: raced.id };
+  }
+
   if (createError) {
     console.error("Failed to create module:", createError);
     return { error: "Couldn't create that topic. Try again." };

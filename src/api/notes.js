@@ -70,6 +70,21 @@ export async function fetchNoteById(noteId) {
   return data;
 }
 
+export async function fetchNoteByModuleId(moduleId) {
+  const { data, error } = await supabase
+    .from("notes")
+    .select("id")
+    .eq("module_id", moduleId)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Failed to look up note:", error);
+    return null;
+  }
+
+  return data;
+}
+
 export async function createNote({ authorId, moduleId, content }) {
   const trimmedContent = content.trim();
 
@@ -88,6 +103,11 @@ export async function createNote({ authorId, moduleId, content }) {
 
   if (error) {
     console.error("Failed to create note:", error);
+
+    if (error.code === "23505") {
+      return { error: "Someone just published to that topic." };
+    }
+
     return { error: "Couldn't publish your note. Try again." };
   }
 

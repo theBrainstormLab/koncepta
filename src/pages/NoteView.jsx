@@ -36,7 +36,7 @@ export default function NoteView() {
   useEffect(() => {
     if (!moduleId) return;
 
-    async function fetchNotes() {
+    async function fetchNote() {
       try {
         const { data, error } = await supabase
           .from("notes")
@@ -49,10 +49,11 @@ export default function NoteView() {
             author:users!notes_author_id_fkey(username)
           `,
           )
-          .eq("module_id", moduleId);
+          .eq("module_id", moduleId)
+          .maybeSingle();
 
         if (error) throw error;
-        if (data.length > 0) setSelectedNote(data[0]);
+        setSelectedNote(data);
       } catch (err) {
         console.error(err);
       } finally {
@@ -60,7 +61,7 @@ export default function NoteView() {
       }
     }
 
-    fetchNotes();
+    fetchNote();
   }, [moduleId]);
 
   useEffect(() => {
