@@ -95,7 +95,9 @@ export default function Home() {
             <div
               key={course.id}
               className="border border-[var(--color-border)] rounded-[20px] p-[30px] transition duration-200 ease-in-out cursor-pointer box-border w-full flex flex-col hover:shadow-[var(--shadow-box-hover)] hover:-translate-y-[4px] max-md:p-5 max-[480px]:p-[15px]"
-              onClick={() => navigate("/modules", { state: course })}
+              onClick={() =>
+                navigate(`/notes/${course.code}`, { state: course })
+              }
             >
               <h3 className="font-medium text-[14px] font-['Poppins-Bold'] truncate m-0 w-full box-border shrink">
                 {course.title}

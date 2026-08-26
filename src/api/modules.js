@@ -36,6 +36,36 @@ export async function fetchModules() {
   }));
 }
 
+export async function fetchModuleById(moduleId) {
+  const { data, error } = await supabase
+    .from("modules")
+    .select(
+      `
+      id,
+      title,
+      course_id,
+      course:courses (
+        id,
+        title,
+        code,
+        degree:degrees (
+          id,
+          name
+        )
+      )
+    `,
+    )
+    .eq("id", moduleId)
+    .single();
+
+  if (error) {
+    console.error("Failed to fetch module:", error);
+    return null;
+  }
+
+  return data;
+}
+
 // Finds an existing module (topic) under a course by name, or creates
 // one if it doesn't exist yet. Case-insensitive so "arrays" and "Arrays"
 // don't end up as two separate topics.

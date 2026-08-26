@@ -16,8 +16,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="*" element={<NotFound />} />
-        <Route path="/modules" element={<Modules />} />
-        <Route path="/note-view" element={<NoteView />} />
+        <Route path="/notes/:courseCode" element={<Modules />} />
+        <Route path="/notes/:courseCode/:moduleId" element={<NoteView />} />
         <Route path="/about" element={<About />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/profile/:username" element={<Profile />} />

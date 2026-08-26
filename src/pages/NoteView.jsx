@@ -1,10 +1,15 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { Icon } from "@iconify-icon/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../utils/supabase";
+import { fetchModuleById } from "../api/modules";
 import Markdown from "../components/Markdown";
 import NoteViewSkeleton from "../components/NoteViewSkeleton";
+import NotFound from "./NotFound";
+
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -18,17 +23,29 @@ function ScrollToTop() {
 const isMobile = () => typeof window !== "undefined" && window.innerWidth < 640;
 
 export default function NoteView() {
+  const { courseCode, moduleId } = useParams();
   const { state } = useLocation();
-  const { course, module } = state;
 
+  // Fast path from router state -- only when it matches the URL's course
+  // code. Fetched fallback covers pasted links where there is no state.
+  const normalizedCode = courseCode?.toLowerCase() ?? "";
+  const stateMatchesUrl =
+    !!state?.module?.id &&
+    typeof state.course?.code === "string" &&
+    state.course.code.toLowerCase() === normalizedCode;
+
+  const [context, setContext] = useState(stateMatchesUrl ? state : null);
   const [notes, setNotes] = useState([]);
   const [selectedNote, setSelectedNote] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
   const [showOverview, setShowOverview] = useState(!isMobile());
   const [showChat, setShowChat] = useState(!isMobile());
 
   useEffect(() => {
+    if (!moduleId) return;
+
     async function fetchNotes() {
       try {
         const { data, error } = await supabase
@@ -42,7 +59,7 @@ export default function NoteView() {
             author:users!notes_author_id_fkey(username)
           `,
           )
-          .eq("module_id", module.id);
+          .eq("module_id", moduleId);
 
         if (error) throw error;
         setNotes(data);
@@ -55,7 +72,35 @@ export default function NoteView() {
     }
 
     fetchNotes();
-  }, [module.id]);
+  }, [moduleId]);
+
+  useEffect(() => {
+    let active = true;
+
+    if (context || !moduleId) return;
+
+    fetchModuleById(moduleId).then((data) => {
+      if (!active) return;
+
+      // Module must exist and its course code must match the URL.
+      if (
+        !data ||
+        (data.course?.code ?? "").toLowerCase() !== normalizedCode
+      ) {
+        setNotFound(true);
+        return;
+      }
+
+      setContext({ course: data.course, module: data });
+    });
+
+    return () => {
+      active = false;
+    };
+  }, [context, moduleId, normalizedCode]);
+
+  const course = context?.course;
+  const module = context?.module;
 
   const formatDate = (iso) => {
     const diff = Date.now() - new Date(iso).getTime();
@@ -102,6 +147,12 @@ export default function NoteView() {
       setShowChat(false);
     }
   };
+
+  if (!courseCode || !moduleId || !UUID_RE.test(moduleId)) {
+    return <NotFound />;
+  }
+
+  if (notFound) return <NotFound />;
   return (
     <div className="flex flex-col sm:flex-row gap-8 min-h-[100svh] relative px-4 sm:px-0">
       <header className="fixed top-0 left-0 right-0 h-16.5  px-4 flex items-center justify-between z-50 md:hidden"></header>
@@ -211,7 +262,7 @@ export default function NoteView() {
         ) : (
           <>
             <h1 className="font-[DynaPuff] font-bold text-shadow-[var(--shadow-text)] text-4xl tracking-[0.05em]">
-              {module.title}
+              {module?.title}
             </h1>
 
             <div className="h-px bg-[var(--color-text)] opacity-15 mt-1"></div>
@@ -233,13 +284,13 @@ export default function NoteView() {
               </div>
               <div className="text-[var(--color-text)] opacity-75 text-sm mt-20">
                 <div className="flex justify-end">
-                  <h4 className="flex items-end">{course.code}</h4>
+                  <h4 className="flex items-end">{course?.code}</h4>
                   <Icon
                     icon="ri:book-2-line"
                     className="flex ml-1.5 items-center"
                   />
                 </div>
-                <h4>{course.degree?.name}</h4>
+                <h4>{course?.degree?.name}</h4>
               </div>
             </div>
           </>
