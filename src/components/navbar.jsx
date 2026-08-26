@@ -5,9 +5,12 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
-  const [dark, setDark] = useState(
-    () => localStorage.getItem("theme") === "dark",
-  );
+  const [dark, setDark] = useState(() => {
+    const stored = localStorage.getItem("theme");
+    return stored
+      ? stored === "dark"
+      : window.matchMedia("(prefers-color-scheme: dark)").matches;
+  });
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark);
@@ -30,7 +33,10 @@ export default function Navbar() {
         >
           about
         </a>
-        <div
+        <button
+          type="button"
+          aria-label="Toggle dark mode"
+          aria-pressed={dark}
           className="bg-[var(--color-bg-secondary)] w-9 h-9 rounded-[10px] flex items-center justify-center cursor-pointer"
           onClick={() => setDark(!dark)}
         >
@@ -42,7 +48,7 @@ export default function Navbar() {
               dark ? "rotate-0" : "rotate-180"
             }`}
           />
-        </div>
+        </button>
         <a
           href="/"
           className="text-base md:text-lg md:w-[120px] md:tracking-widest"
@@ -59,6 +65,9 @@ export default function Navbar() {
 
       {/* Mobile toggle -> visible on mobile, hidden from sm up */}
       <button
+        type="button"
+        aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+        aria-expanded={isMenuOpen}
         className="sm:hidden absolute top-4 right-5 z-[1001] flex justify-center items-center bg-[var(--color-bg-secondary)] rounded-[10px] w-9 h-9 mx-auto"
         onClick={toggleMenu}
       >
@@ -86,7 +95,10 @@ export default function Navbar() {
           >
             about
           </a>
-          <div
+          <button
+            type="button"
+            aria-label="Toggle dark mode"
+            aria-pressed={dark}
             className="flex justify-center items-center bg-[var(--color-bg-secondary)] rounded-[10px] w-9 h-9 mx-auto my-4 cursor-pointer"
             onClick={() => setDark(!dark)}
           >
@@ -98,7 +110,7 @@ export default function Navbar() {
                 dark ? "rotate-0" : "rotate-180"
               }`}
             />
-          </div>
+          </button>
           <a
             href="/"
             className="block text-center px-4 py-5 no-underline text-xl"
