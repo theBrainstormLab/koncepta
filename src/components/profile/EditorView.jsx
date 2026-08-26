@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Markdown from "../Markdown";
 import { HEADING, MUTED } from "../../utils/profileConstants";
 import { BackLink, EditorActionButton, Panel, Page } from "./ProfileParts";
@@ -54,33 +54,28 @@ export function EditorView({
 }) {
   const isEditing = Boolean(noteId);
 
-  const [courseId, setCourseId] = useState(initialCourseId);
-  const [moduleTitle, setModuleTitle] = useState(initialModuleTitle);
-  const [body, setBody] = useState(initialBody);
-  const [restoredNotice, setRestoredNotice] = useState(false);
+  // Restore a local draft synchronously at first render -- only when
+  // creating a fresh note, never when editing an existing one.
+  const [restoredDraft] = useState(() =>
+    !userId || isEditing ? null : loadDraft(userId),
+  );
+
+  const [courseId, setCourseId] = useState(
+    restoredDraft?.courseId ?? initialCourseId,
+  );
+  const [moduleTitle, setModuleTitle] = useState(
+    restoredDraft?.moduleTitle ?? initialModuleTitle,
+  );
+  const [body, setBody] = useState(restoredDraft?.body ?? initialBody);
+  const [restoredNotice, setRestoredNotice] = useState(
+    Boolean(restoredDraft),
+  );
   const [draftSavedNotice, setDraftSavedNotice] = useState(false);
 
-  // Restore a local draft on mount, only when creating a fresh note.
-  useEffect(() => {
-    if (!userId || isEditing) return;
+  // Fall back to the first course until the user picks one.
+  const activeCourseId = courseId || courses[0]?.id || "";
 
-    const draft = loadDraft(userId);
-    if (!draft) return;
-
-    setCourseId(draft.courseId ?? "");
-    setModuleTitle(draft.moduleTitle ?? "");
-    setBody(draft.body ?? "");
-    setRestoredNotice(true);
-  }, [userId, isEditing]);
-
-  // Default the course select once courses load in, if nothing's chosen yet.
-  useEffect(() => {
-    if (!courseId && courses.length > 0) {
-      setCourseId(courses[0].id);
-    }
-  }, [courses, courseId]);
-
-  const draft = { noteId, courseId, moduleTitle, body };
+  const draft = { noteId, courseId: activeCourseId, moduleTitle, body };
 
   const handleSaveDraft = () => {
     saveDraft(userId, draft);
@@ -91,7 +86,7 @@ export function EditorView({
 
   const handleDiscardDraft = () => {
     clearDraft(userId);
-    setCourseId(courses[0]?.id ?? "");
+    setCourseId("");
     setModuleTitle("");
     setBody("");
     setRestoredNotice(false);
@@ -126,7 +121,7 @@ export function EditorView({
       <div className="mt-8 grid gap-4 md:grid-cols-2">
 
         <select
-          value={courseId}
+          value={activeCourseId}
           onChange={(e) => {
             setCourseId(e.target.value);
             setModuleTitle("");
@@ -160,7 +155,7 @@ export function EditorView({
           <input
             value={moduleTitle}
             onChange={(e) => setModuleTitle(e.target.value)}
-            disabled={modulesLoading || !courseId}
+            disabled={modulesLoading || !activeCourseId}
             placeholder="Name of Module."
             aria-label="Topic"
             className="
