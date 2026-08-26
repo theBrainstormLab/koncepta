@@ -5,15 +5,15 @@ RLS notes under each table below).
 
 ## degrees
 
-| column | type |
-| ------ | ---- |
-| id     | uuid |
-| name   | text |
+| column | type            |
+| ------ | --------------- |
+| id     | uuid            |
+| name   | varchar, unique |
 
 ```sql
 create table degrees (
   id uuid primary key default gen_random_uuid(),
-  name text not null
+  name varchar not null unique
 );
 ```
 
@@ -21,25 +21,29 @@ create table degrees (
 
 ## courses
 
-| column     | type                     |
-| ---------- | ------------------------ |
-| id         | uuid                     |
-| degree_id  | uuid, references degrees |
-| title      | text                     |
-| code       | text                     |
-| created_at | timestamp                |
+| column     | type                                 |
+| ---------- | ------------------------------------ |
+| id         | uuid                                 |
+| degree_id  | uuid, references degrees             |
+| title      | varchar                              |
+| code       | varchar, unique (`courses_code_key`) |
+| created_at | timestamp                            |
 
 ```sql
 create table courses (
   id uuid primary key default gen_random_uuid(),
   degree_id uuid not null references degrees(id) on delete cascade,
-  title text not null,
-  code text not null,
-  created_at timestamp with time zone default now()
+  title varchar not null,
+  code varchar not null,
+  created_at timestamp default now()
 );
+alter table courses add constraint courses_code_key unique (code);
 ```
 
 **RLS:** public read only. Admin-managed, nothing in the app writes here.
+
+`code` is the real-world course identifier used in URLs
+(`/notes/<code>/<moduleId>`), hence the unique constraint.
 
 ## modules
 
@@ -50,30 +54,35 @@ Multiple modules per course is expected and normal.
 | ---------- | ------------------------ |
 | id         | uuid                     |
 | course_id  | uuid, references courses |
-| title      | text                     |
+| title      | varchar                  |
 | created_at | timestamp                |
+| verified   | boolean, default false   |
 
 ```sql
 create table modules (
   id uuid primary key default gen_random_uuid(),
   course_id uuid not null references courses(id) on delete cascade,
-  title text not null,
-  created_at timestamp with time zone default now()
+  title varchar not null,
+  created_at timestamp default now(),
+  verified boolean not null default false
 );
 ```
 
 **RLS:** public read; any signed-in user can insert (the note editor
 creates a module on the fly when you type a new topic name -> see
 `ensureModuleId` in `src/api/modules.js`). No update/delete policy yet.
+`verified` is admin-set; the app only displays it.
 
 ## notes
+
+Titles were removed from the product; the `title` column has been
+dropped. A note is content attached to a module.
 
 | column     | type                     |
 | ---------- | ------------------------ |
 | id         | uuid                     |
 | module_id  | uuid, references modules |
 | author_id  | uuid, references users   |
-| title      | text                     |
 | content    | text                     |
 | created_at | timestamp                |
 | updated_at | timestamp                |
@@ -83,17 +92,16 @@ create table notes (
   id uuid primary key default gen_random_uuid(),
   module_id uuid not null references modules(id) on delete cascade,
   author_id uuid not null references users(id) on delete cascade,
-  title text not null,
   content text not null,
-  created_at timestamp with time zone default now(),
-  updated_at timestamp with time zone default now()
+  created_at timestamp default now(),
+  updated_at timestamp default now()
 );
 ```
 
 **RLS:** public read; insert/update/delete restricted to
 `auth.uid() = author_id`.
 
-## note_contributors *(currently not in the app yet)*
+## note*contributors *(currently not in the app yet)\_
 
 Join table, tracks who else contributed to a note besides the original author.
 
@@ -120,19 +128,19 @@ Populated automatically on signup by a trigger
 never written to directly from client code except for username changes.
 New users get a random username (e.g. `Rusty_Falcon_0417`).
 
-| column     | type      |
-| ---------- | --------- |
-| id         | uuid      |
-| username   | text      |
-| email      | text      |
-| created_at | timestamp |
+| column     | type            |
+| ---------- | --------------- |
+| id         | uuid            |
+| username   | varchar, unique |
+| email      | varchar, unique |
+| created_at | timestamp       |
 
 ```sql
 create table users (
   id uuid primary key default gen_random_uuid(),
-  username text not null unique,
-  email text not null unique,
-  created_at timestamp with time zone default now()
+  username varchar not null unique,
+  email varchar not null unique,
+  created_at timestamp default now()
 );
 ```
 
