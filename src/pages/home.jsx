@@ -2,10 +2,12 @@ import { useState, useEffect } from "react";
 import { Icon } from "@iconify-icon/react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../utils/supabase";
+import { useTitle } from "../utils/useTitle";
 import CardSkeleton from "../components/CardSkeleton";
 import CardGrid from "../components/CardGrid";
 
 export default function Home() {
+  useTitle("koncepta");
   const [query, setQuery] = useState("");
   const [subject, setSubject] = useState("Computer science");
   const [courses, setCourses] = useState([]);

@@ -4,6 +4,7 @@ import { Icon } from "@iconify-icon/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../utils/supabase";
 import { fetchModuleById } from "../api/modules";
+import { useTitle } from "../utils/useTitle";
 import Markdown from "../components/Markdown";
 import NoteViewSkeleton from "../components/NoteViewSkeleton";
 import NotFound from "./NotFound";
@@ -91,6 +92,8 @@ export default function NoteView() {
 
   const course = context?.course;
   const module = context?.module;
+
+  useTitle(module && course ? `${module.title} - ${course.code}` : null);
 
   const formatDate = (iso) => {
     const diff = Date.now() - new Date(iso).getTime();

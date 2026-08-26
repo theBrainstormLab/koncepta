@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { supabase } from "../utils/supabase";
 
 import { SCREENS } from "../utils/profileConstants";
+import { useTitle } from "../utils/useTitle";
 import { AuthShell } from "../components/profile/AuthShell";
 import { EditorView } from "../components/profile/EditorView";
 import { ProfileView } from "../components/profile/ProfileView";
@@ -24,6 +25,8 @@ import {
 
 export default function Profile() {
   const { username } = useParams();
+
+  useTitle(username ?? "profile");
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);

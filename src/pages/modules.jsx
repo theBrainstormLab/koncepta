@@ -3,6 +3,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Icon } from "@iconify-icon/react";
 import { supabase } from "../utils/supabase";
 import { fetchCourseByCode } from "../api/courses";
+import { useTitle } from "../utils/useTitle";
 import CardSkeleton from "../components/CardSkeleton";
 import CardGrid from "../components/CardGrid";
 import NotFound from "./NotFound";
@@ -25,6 +26,10 @@ function Modules() {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const navigate = useNavigate();
+
+  useTitle(
+    course?.title && course?.code ? `${course.title} - ${course.code}` : null,
+  );
 
   useEffect(() => {
     if (!course?.id) return;

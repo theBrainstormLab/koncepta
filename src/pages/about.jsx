@@ -1,4 +1,7 @@
+import { useTitle } from "../utils/useTitle";
+
 function About() {
+  useTitle("about");
   const aboutData = [
     {
       title: "who we are",
