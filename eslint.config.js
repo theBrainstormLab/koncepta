@@ -27,8 +27,6 @@ export default defineConfig([
       },
     },
     rules: {
-      // Track identifiers used only in JSX (e.g. <motion.div />) so
-      // no-unused-vars doesn't report them as unused.
       'react/jsx-uses-vars': 'error',
       'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
     },
