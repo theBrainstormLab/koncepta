@@ -11,15 +11,6 @@ import NotFound from "./NotFound";
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-function ScrollToTop() {
-  const { pathname } = useLocation();
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
-
-  return null;
-}
 const isMobile = () => typeof window !== "undefined" && window.innerWidth < 640;
 
 export default function NoteView() {
@@ -35,7 +26,6 @@ export default function NoteView() {
     state.course.code.toLowerCase() === normalizedCode;
 
   const [context, setContext] = useState(stateMatchesUrl ? state : null);
-  const [notes, setNotes] = useState([]);
   const [selectedNote, setSelectedNote] = useState(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
@@ -62,7 +52,6 @@ export default function NoteView() {
           .eq("module_id", moduleId);
 
         if (error) throw error;
-        setNotes(data);
         if (data.length > 0) setSelectedNote(data[0]);
       } catch (err) {
         console.error(err);
@@ -120,7 +109,6 @@ export default function NoteView() {
       }
     }
   };
-  const [isScrolled, setIsScrolled] = useState(false);
   useEffect(() => {
     const handleScroll = () => {
       if (isMobile()) {
