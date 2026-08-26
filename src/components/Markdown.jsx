@@ -1,23 +1,33 @@
 import { memo, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
-import mermaid from "mermaid";
 
-mermaid.initialize({
-  startOnLoad: false,
-  theme: "base",
-  flowchart: { useMaxWidth: true, htmlLabels: false },
-  themeVariables: {
-    fontFamily: "inherit",
-    fontSize: "14px",
-    background: "transparent",
-    primaryColor: "#2f2f34",
-    primaryBorderColor: "#8f8f95",
-    primaryTextColor: "#f5f5f5",
-    lineColor: "#8f8f95",
-    clusterBkg: "transparent",
-    clusterBorder: "#8f8f95",
-  },
-});
+let mermaidPromise = null;
+
+function loadMermaid() {
+  if (!mermaidPromise) {
+    mermaidPromise = import("mermaid").then((module) => {
+      const mermaid = module.default ?? module;
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: "base",
+        flowchart: { useMaxWidth: true, htmlLabels: false },
+        themeVariables: {
+          fontFamily: "inherit",
+          fontSize: "14px",
+          background: "transparent",
+          primaryColor: "#2f2f34",
+          primaryBorderColor: "#8f8f95",
+          primaryTextColor: "#f5f5f5",
+          lineColor: "#8f8f95",
+          clusterBkg: "transparent",
+          clusterBorder: "#8f8f95",
+        },
+      });
+      return mermaid;
+    });
+  }
+  return mermaidPromise;
+}
 
 function Mermaid({ chart }) {
   const containerRef = useRef(null);
@@ -28,6 +38,7 @@ function Mermaid({ chart }) {
 
     async function renderDiagram() {
       try {
+        const mermaid = await loadMermaid();
         const { svg } = await mermaid.render(idRef.current, chart.trim());
         if (!mounted || !containerRef.current) return;
 
