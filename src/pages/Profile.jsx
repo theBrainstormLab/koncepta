@@ -50,16 +50,15 @@ export default function Profile() {
       const userNotes = await fetchNotesByAuthorId(sessionUser.id);
       if (!active) return;
 
-      setProfile(
-        user ?? {
-          id: sessionUser.id,
-          username:
-            sessionUser.user_metadata?.username ??
-            sessionUser.email?.split("@")[0] ??
-            "Anonymoooooose",
-          email: sessionUser.email ?? "",
-        },
-      );
+      setProfile({
+        id: sessionUser.id,
+        username:
+          user?.username ??
+          sessionUser.user_metadata?.username ??
+          sessionUser.email?.split("@")[0] ??
+          "Anonymoooooose",
+        email: sessionUser.email ?? "",
+      });
       setNotes(userNotes);
     };
 
@@ -155,7 +154,7 @@ export default function Profile() {
       return false;
     }
 
-    setProfile(data);
+    setProfile((prev) => ({ ...prev, ...data }));
     return true;
   };
 

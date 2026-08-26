@@ -150,7 +150,7 @@ export function ProfileHeader({
   username,
   notesCount,
   editable,
-  email = "shaaanuu@example.com",
+  email = "",
   onCreateNote,
   onLogout,
   onUsernameChange,

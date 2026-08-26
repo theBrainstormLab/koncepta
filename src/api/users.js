@@ -5,7 +5,7 @@ const USERNAME_PATTERN = /^[a-zA-Z0-9_]{3,50}$/;
 export async function fetchUserById(userId) {
   const { data, error } = await supabase
     .from("users")
-    .select("id, username, email")
+    .select("id, username")
     .eq("id", userId)
     .single();
 
@@ -20,7 +20,7 @@ export async function fetchUserById(userId) {
 export async function fetchUserByUsername(username) {
   const { data, error } = await supabase
     .from("users")
-    .select("id, username, email")
+    .select("id, username")
     .eq("username", username)
     .single();
 
@@ -46,7 +46,7 @@ export async function changeUsername(userId, nextUsername) {
     .from("users")
     .update({ username: trimmed })
     .eq("id", userId)
-    .select("id, username, email")
+    .select("id, username")
     .single();
 
   if (error) {
