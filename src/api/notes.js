@@ -1,6 +1,6 @@
 import { supabase } from "../utils/supabase";
 
-function mapNotes(rows) {
+export function mapNotes(rows) {
   return (rows ?? []).map((note) => {
     const course = note.module?.course;
     const degree = course?.degree;
