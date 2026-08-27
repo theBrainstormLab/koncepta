@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation, useParams } from "react-router-dom";
-import { Icon } from "@iconify-icon/react";
+import { Icon } from "../components/Icon";
 import { motion, AnimatePresence } from "framer-motion";
-import { supabase } from "../utils/supabase";
 import { fetchModuleById } from "../api/modules";
+import { fetchNoteByModule } from "../api/notes";
 import { useTitle } from "../utils/useTitle";
 import Markdown from "../components/Markdown";
 import NoteViewSkeleton from "../components/NoteViewSkeleton";
@@ -39,21 +39,7 @@ export default function NoteView() {
 
     async function fetchNote() {
       try {
-        const { data, error } = await supabase
-          .from("notes")
-          .select(
-            `
-            id,
-            content,
-            created_at,
-            updated_at,
-            author:users!notes_author_id_fkey(username)
-          `,
-          )
-          .eq("module_id", moduleId)
-          .maybeSingle();
-
-        if (error) throw error;
+        const data = await fetchNoteByModule(moduleId);
         setSelectedNote(data);
       } catch (err) {
         console.error(err);

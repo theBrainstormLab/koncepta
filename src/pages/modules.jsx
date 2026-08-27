@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { Icon } from "@iconify-icon/react";
-import { supabase } from "../utils/supabase";
+import { Icon } from "../components/Icon";
 import { fetchCourseByCode } from "../api/courses";
+import { fetchModulesByCourse } from "../api/modules";
 import { useTitle } from "../utils/useTitle";
+import { useDeferredLoad } from "../utils/useDeferredLoad";
 import CardSkeleton from "../components/CardSkeleton";
 import CardGrid from "../components/CardGrid";
 import NotFound from "./NotFound";
@@ -31,28 +32,23 @@ function Modules() {
     course?.title && course?.code ? `${course.title} - ${course.code}` : null,
   );
 
-  useEffect(() => {
-    if (!course?.id) return;
-
-    async function fetchModules() {
-      try {
-        const { data, error } = await supabase
-          .from("modules")
-          .select(
-            'id, title, created_at, verified, notes (author:users!notes_author_id_fkey (username))')
-          .eq("course_id", course.id);
-
-        if (error) throw error;
-        setModules(data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
+  const loadModules = async () => {
+    if (!course?.id) {
+      setLoading(false);
+      return;
     }
 
-    fetchModules();
-  }, [course?.id]);
+    try {
+      const data = await fetchModulesByCourse(course.id);
+      setModules(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const moduleGridRef = useDeferredLoad(loadModules, [course?.id]);
 
   useEffect(() => {
     let active = true;
@@ -113,15 +109,16 @@ function Modules() {
         </div>
       </div>
 
-      {loading ? (
-        <CardGrid>
-          {Array.from({ length: 6 }).map((_, i) => (
-            <CardSkeleton key={i} />
-          ))}
-        </CardGrid>
-      ) : (
-        <CardGrid className="grid grid-cols-1 md:grid-cols-3 gap-6 px-5 py-[50px] md:px-[100px]">
-          {filtered.map((mod) => (
+      <div ref={moduleGridRef}>
+        {loading ? (
+          <CardGrid>
+            {Array.from({ length: 6 }).map((_, i) => (
+              <CardSkeleton key={i} />
+            ))}
+          </CardGrid>
+        ) : (
+          <CardGrid className="grid grid-cols-1 md:grid-cols-3 gap-6 px-5 py-[50px] md:px-[100px]">
+            {filtered.map((mod) => (
             <div
               key={mod.id}
               className="border border-[var(--color-border)] rounded-[20px] p-[30px] transition duration-200 ease-in-out cursor-pointer box-border w-full flex flex-col hover:shadow-[var(--shadow-box-hover)] hover:-translate-y-[4px] max-md:p-5 max-[480px]:p-[15px]"
@@ -155,6 +152,7 @@ function Modules() {
           ))}
         </CardGrid>
       )}
+      </div>
     </div>
     </>
   );

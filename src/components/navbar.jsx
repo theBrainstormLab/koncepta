@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Icon } from "@iconify-icon/react";
+import { Icon } from "./Icon";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -41,14 +41,17 @@ export default function Navbar() {
           className="bg-[var(--color-bg-secondary)] w-9 h-9 rounded-[10px] flex items-center justify-center cursor-pointer"
           onClick={() => setDark(!dark)}
         >
-          <Icon
-            icon={dark ? "ri:moon-line" : "ri:sun-line"}
-            width="22"
-            height="22"
-            className={`cursor-pointer transition-transform duration-300 ${
-              dark ? "rotate-0" : "rotate-180"
-            }`}
-          />
+           <span
+             className={`inline-flex transition-transform duration-300 motion-reduce:transition-none ${
+               dark ? "rotate-0" : "rotate-180"
+             }`}
+           >
+             <Icon
+               icon={dark ? "ri:moon-line" : "ri:sun-line"}
+               width="22"
+               height="22"
+             />
+           </span>
         </button>
         <Link
           to="/"
@@ -103,14 +106,17 @@ export default function Navbar() {
             className="flex justify-center items-center bg-[var(--color-bg-secondary)] rounded-[10px] w-9 h-9 mx-auto my-4 cursor-pointer"
             onClick={() => setDark(!dark)}
           >
-            <Icon
-              icon={dark ? "ri:moon-line" : "ri:sun-line"}
-              width="22"
-              height="22"
-              className={`transition-transform duration-300 ${
+            <span
+              className={`inline-flex transition-transform duration-300 motion-reduce:transition-none ${
                 dark ? "rotate-0" : "rotate-180"
               }`}
-            />
+            >
+              <Icon
+                icon={dark ? "ri:moon-line" : "ri:sun-line"}
+                width="22"
+                height="22"
+              />
+            </span>
           </button>
           <Link
             to="/"
