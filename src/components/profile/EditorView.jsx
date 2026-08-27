@@ -2,22 +2,11 @@ import { useState } from "react";
 import Markdown from "../Markdown";
 import { HEADING, MUTED } from "../../utils/profileConstants";
 import { BackLink, EditorActionButton, Panel, Page } from "./ProfileParts";
-
-function draftKey(userId) {
-  return `koncepta:draft:${userId}`;
-}
-
-function loadDraft(userId) {
-  if (!userId) return null;
-
-  try {
-    const raw = localStorage.getItem(draftKey(userId));
-    return raw ? JSON.parse(raw) : null;
-  } catch (error) {
-    console.error("Failed to read local draft:", error);
-    return null;
-  }
-}
+import {
+  draftKey,
+  clearDraft,
+  resolveInitialDraft,
+} from "./editorDraft";
 
 function saveDraft(userId, draft) {
   if (!userId) return;
@@ -26,16 +15,6 @@ function saveDraft(userId, draft) {
     localStorage.setItem(draftKey(userId), JSON.stringify(draft));
   } catch (error) {
     console.error("Failed to save local draft:", error);
-  }
-}
-
-function clearDraft(userId) {
-  if (!userId) return;
-
-  try {
-    localStorage.removeItem(draftKey(userId));
-  } catch (error) {
-    console.error("Failed to clear local draft:", error);
   }
 }
 
@@ -56,9 +35,7 @@ export function EditorView({
 
   // Restore a local draft synchronously at first render -- only when
   // creating a fresh note, never when editing an existing one.
-  const [restoredDraft] = useState(() =>
-    !userId || isEditing ? null : loadDraft(userId),
-  );
+  const [restoredDraft] = useState(() => resolveInitialDraft(userId, isEditing));
 
   const [courseId, setCourseId] = useState(
     restoredDraft?.courseId ?? initialCourseId,
