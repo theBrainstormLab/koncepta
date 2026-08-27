@@ -1,4 +1,7 @@
-import { supabase } from "../utils/supabase";
+async function getSb() {
+  const { supabase } = await import("../utils/supabase");
+  return supabase;
+}
 
 export function mapNotes(rows) {
   return (rows ?? []).map((note) => {
@@ -17,6 +20,7 @@ export function mapNotes(rows) {
 }
 
 export async function fetchNotesByAuthorId(authorId) {
+  const supabase = await getSb();
   const { data, error } = await supabase
     .from("notes")
     .select(
@@ -50,15 +54,10 @@ export async function fetchNotesByAuthorId(authorId) {
 }
 
 export async function fetchNoteById(noteId) {
+  const supabase = await getSb();
   const { data, error } = await supabase
     .from("notes")
-    .select(
-      `
-      id,
-      content,
-      module:modules ( id, title, course_id )
-    `,
-    )
+    .select("id, content, module:modules ( id, title, course_id )")
     .eq("id", noteId)
     .single();
 
@@ -71,6 +70,7 @@ export async function fetchNoteById(noteId) {
 }
 
 export async function fetchNoteByModuleId(moduleId) {
+  const supabase = await getSb();
   const { data, error } = await supabase
     .from("notes")
     .select("id")
@@ -85,29 +85,41 @@ export async function fetchNoteByModuleId(moduleId) {
   return data;
 }
 
+export async function fetchNoteByModule(moduleId) {
+  const supabase = await getSb();
+  const { data, error } = await supabase
+    .from("notes")
+    .select(
+      "id, content, created_at, updated_at, author:users!notes_author_id_fkey(username)",
+    )
+    .eq("module_id", moduleId)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Failed to fetch note:", error);
+    return null;
+  }
+
+  return data;
+}
+
 export async function createNote({ authorId, moduleId, content }) {
   const trimmedContent = content.trim();
-
   if (!moduleId) return { error: "Pick a module for this note." };
   if (!trimmedContent) return { error: "Your note is empty." };
 
+  const supabase = await getSb();
   const { data, error } = await supabase
     .from("notes")
-    .insert({
-      author_id: authorId,
-      module_id: moduleId,
-      content: trimmedContent,
-    })
+    .insert({ author_id: authorId, module_id: moduleId, content: trimmedContent })
     .select("id")
     .single();
 
   if (error) {
     console.error("Failed to create note:", error);
-
     if (error.code === "23505") {
       return { error: "Someone just published to that topic." };
     }
-
     return { error: "Couldn't publish your note. Try again." };
   }
 
@@ -116,16 +128,13 @@ export async function createNote({ authorId, moduleId, content }) {
 
 export async function updateNote({ noteId, moduleId, content }) {
   const trimmedContent = content.trim();
-
   if (!moduleId) return { error: "Pick a module for this note." };
   if (!trimmedContent) return { error: "Your note is empty." };
 
+  const supabase = await getSb();
   const { data, error } = await supabase
     .from("notes")
-    .update({
-      module_id: moduleId,
-      content: trimmedContent,
-    })
+    .update({ module_id: moduleId, content: trimmedContent })
     .eq("id", noteId)
     .select("id")
     .single();
@@ -139,6 +148,7 @@ export async function updateNote({ noteId, moduleId, content }) {
 }
 
 export async function deleteNote(noteId) {
+  const supabase = await getSb();
   const { error } = await supabase.from("notes").delete().eq("id", noteId);
 
   if (error) {

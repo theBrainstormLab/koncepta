@@ -1,8 +1,12 @@
-import { supabase } from "../utils/supabase";
+async function getSb() {
+  const { supabase } = await import("../utils/supabase");
+  return supabase;
+}
 
 const USERNAME_PATTERN = /^[a-zA-Z0-9_]{3,50}$/;
 
 export async function fetchUserById(userId) {
+  const supabase = await getSb();
   const { data, error } = await supabase
     .from("users")
     .select("id, username")
@@ -18,6 +22,7 @@ export async function fetchUserById(userId) {
 }
 
 export async function fetchUserByUsername(username) {
+  const supabase = await getSb();
   const { data, error } = await supabase
     .from("users")
     .select("id, username")
@@ -42,6 +47,7 @@ export async function changeUsername(userId, nextUsername) {
     };
   }
 
+  const supabase = await getSb();
   const { data, error } = await supabase
     .from("users")
     .update({ username: trimmed })
@@ -51,11 +57,9 @@ export async function changeUsername(userId, nextUsername) {
 
   if (error) {
     console.error("Failed to change username:", error);
-
     if (error.code === "23505") {
       return { error: "That username is already taken." };
     }
-
     return { error: "Something went wrong. Try again." };
   }
 

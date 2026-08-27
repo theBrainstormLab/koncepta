@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Icon } from "../Icon";
 import { AuthField } from "./ProfileParts";
-import { supabase } from "../../utils/supabase";
 
 export function AuthShell({ isSignUp, setIsSignUp }) {
   const [email, setEmail] = useState("");
@@ -22,6 +21,8 @@ export function AuthShell({ isSignUp, setIsSignUp }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
+
+    const { supabase } = await import("../../utils/supabase");
 
     if (isSignUp) {
       if (password !== confirmPassword) {

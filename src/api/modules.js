@@ -1,6 +1,10 @@
-import { supabase } from "../utils/supabase";
+async function getSb() {
+  const { supabase } = await import("../utils/supabase");
+  return supabase;
+}
 
 export async function fetchModules() {
+  const supabase = await getSb();
   const { data, error } = await supabase
     .from("modules")
     .select(
@@ -12,10 +16,7 @@ export async function fetchModules() {
         id,
         title,
         code,
-        degree:degrees (
-          id,
-          name
-        )
+        degree:degrees ( id, name )
       )
     `,
     )
@@ -37,6 +38,7 @@ export async function fetchModules() {
 }
 
 export async function fetchModuleById(moduleId) {
+  const supabase = await getSb();
   const { data, error } = await supabase
     .from("modules")
     .select(
@@ -48,10 +50,7 @@ export async function fetchModuleById(moduleId) {
         id,
         title,
         code,
-        degree:degrees (
-          id,
-          name
-        )
+        degree:degrees ( id, name )
       )
     `,
     )
@@ -66,15 +65,37 @@ export async function fetchModuleById(moduleId) {
   return data;
 }
 
-// Finds an existing module (topic) under a course by name, or creates
-// one if it doesn't exist yet. Case-insensitive so "arrays" and "Arrays"
-// don't end up as two separate topics.
+export async function fetchModulesByCourse(courseId) {
+  const supabase = await getSb();
+  const { data, error } = await supabase
+    .from("modules")
+    .select(
+      `
+      id,
+      title,
+      created_at,
+      verified,
+      notes (
+        author:users!notes_author_id_fkey ( username )
+      )
+    `,
+    )
+    .eq("course_id", courseId);
+
+  if (error) {
+    console.error("Failed to fetch modules:", error);
+    return [];
+  }
+
+  return data ?? [];
+}
+
 export async function ensureModuleId(courseId, moduleTitle) {
   const trimmed = moduleTitle.trim();
-
   if (!courseId) return { error: "Pick a paper first." };
   if (!trimmed) return { error: "Give the topic a name." };
 
+  const supabase = await getSb();
   const { data: existing, error: findError } = await supabase
     .from("modules")
     .select("id")
@@ -86,7 +107,6 @@ export async function ensureModuleId(courseId, moduleTitle) {
     console.error("Failed to look up module:", findError);
     return { error: "Something went wrong. Try again." };
   }
-
   if (existing) return { data: existing.id };
 
   const { data: created, error: createError } = await supabase
@@ -102,7 +122,6 @@ export async function ensureModuleId(courseId, moduleTitle) {
       .eq("course_id", courseId)
       .ilike("title", trimmed)
       .maybeSingle();
-
     if (racedError || !raced) {
       console.error(
         "Failed to re-select module after conflict:",
@@ -110,10 +129,8 @@ export async function ensureModuleId(courseId, moduleTitle) {
       );
       return { error: "Couldn't create that topic. Try again." };
     }
-
     return { data: raced.id };
   }
-
   if (createError) {
     console.error("Failed to create module:", createError);
     return { error: "Couldn't create that topic. Try again." };

@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Icon } from "../components/Icon";
-import { supabase } from "../utils/supabase";
 import { fetchCourseByCode } from "../api/courses";
+import { fetchModulesByCourse } from "../api/modules";
 import { useTitle } from "../utils/useTitle";
 import CardSkeleton from "../components/CardSkeleton";
 import CardGrid from "../components/CardGrid";
@@ -34,15 +34,9 @@ function Modules() {
   useEffect(() => {
     if (!course?.id) return;
 
-    async function fetchModules() {
+    async function loadModules() {
       try {
-        const { data, error } = await supabase
-          .from("modules")
-          .select(
-            'id, title, created_at, verified, notes (author:users!notes_author_id_fkey (username))')
-          .eq("course_id", course.id);
-
-        if (error) throw error;
+        const data = await fetchModulesByCourse(course.id);
         setModules(data);
       } catch (err) {
         console.error(err);
@@ -51,7 +45,7 @@ function Modules() {
       }
     }
 
-    fetchModules();
+    loadModules();
   }, [course?.id]);
 
   useEffect(() => {

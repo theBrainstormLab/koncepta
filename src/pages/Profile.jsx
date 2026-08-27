@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { supabase } from "../utils/supabase";
 
 import { SCREENS } from "../utils/profileConstants";
 import { useTitle } from "../utils/useTitle";
@@ -46,6 +45,7 @@ export default function Profile() {
 
   useEffect(() => {
     let active = true;
+    let subscription;
 
     const syncLoggedInProfile = async (sessionUser) => {
       const user = await fetchUserById(sessionUser.id);
@@ -83,10 +83,12 @@ export default function Profile() {
       setNotes(userNotes);
     };
 
-    const initialize = async () => {
+    (async () => {
       setLoading(true);
 
       try {
+        const { supabase } = await import("../utils/supabase");
+
         const {
           data: { session },
         } = await supabase.auth.getSession();
@@ -97,17 +99,32 @@ export default function Profile() {
 
         if (username) {
           await syncPublicProfile(username);
-          return;
-        }
-
-        if (!session) {
+        } else if (!session) {
           setProfile(null);
           setNotes([]);
           setScreen(SCREENS.OVERVIEW);
-          return;
+        } else {
+          await syncLoggedInProfile(session.user);
         }
 
-        await syncLoggedInProfile(session.user);
+        const {
+          data: { subscription: sub },
+        } = supabase.auth.onAuthStateChange((_event, authSession) => {
+          if (username) return;
+
+          setIsLoggedIn(!!authSession);
+
+          if (!authSession) {
+            setProfile(null);
+            setNotes([]);
+            setScreen(SCREENS.OVERVIEW);
+            return;
+          }
+
+          void syncLoggedInProfile(authSession.user);
+        });
+
+        subscription = sub;
       } catch (error) {
         console.error(error);
         if (!active) return;
@@ -116,30 +133,11 @@ export default function Profile() {
       } finally {
         if (active) setLoading(false);
       }
-    };
-
-    void initialize();
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (username) return;
-
-      setIsLoggedIn(!!session);
-
-      if (!session) {
-        setProfile(null);
-        setNotes([]);
-        setScreen(SCREENS.OVERVIEW);
-        return;
-      }
-
-      void syncLoggedInProfile(session.user);
-    });
+    })();
 
     return () => {
       active = false;
-      subscription.unsubscribe();
+      subscription?.unsubscribe();
     };
   }, [username]);
 
@@ -274,6 +272,7 @@ export default function Profile() {
   };
 
   const handleLogout = async () => {
+    const { supabase } = await import("../utils/supabase");
     const { error } = await supabase.auth.signOut();
 
     if (error) {

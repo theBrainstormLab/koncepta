@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Icon } from "../components/Icon";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "../utils/supabase";
+import { fetchCourses } from "../api/courses";
 import { useTitle } from "../utils/useTitle";
 import CardSkeleton from "../components/CardSkeleton";
 import CardGrid from "../components/CardGrid";
@@ -16,17 +16,9 @@ export default function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function fetchCourses() {
+    async function loadCourses() {
       try {
-        const { data, error } = await supabase.from("courses").select(`
-            id,
-            title,
-            code,
-            degree:degrees(name)
-          `);
-
-        if (error) throw error;
-
+        const data = await fetchCourses();
         setCourses(data);
       } catch (err) {
         console.error(err);
@@ -35,7 +27,7 @@ export default function Home() {
       }
     }
 
-    fetchCourses();
+    loadCourses();
   }, []);
 
   return (
@@ -111,7 +103,7 @@ export default function Home() {
 
               <div className="flex items-center text-[0.75rem] opacity-75 w-full box-border max-[480px]:text-[0.7rem]">
                 <Icon icon="ri:book-2-line" className="mr-[7px]" />
-                {course.degree?.name}
+                {course.degreeName}
               </div>
             </div>
           ))}

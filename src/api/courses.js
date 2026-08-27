@@ -1,6 +1,10 @@
-import { supabase } from "../utils/supabase";
+async function getSb() {
+  const { supabase } = await import("../utils/supabase");
+  return supabase;
+}
 
 export async function fetchCourseByCode(code) {
+  const supabase = await getSb();
   const { data, error } = await supabase
     .from("courses")
     .select(
@@ -23,6 +27,7 @@ export async function fetchCourseByCode(code) {
 }
 
 export async function fetchCourses() {
+  const supabase = await getSb();
   const { data, error } = await supabase
     .from("courses")
     .select(
