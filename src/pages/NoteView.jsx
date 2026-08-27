@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation, useParams } from "react-router-dom";
-import { Icon } from "@iconify-icon/react";
+import { Icon } from "../components/Icon";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../utils/supabase";
 import { fetchModuleById } from "../api/modules";

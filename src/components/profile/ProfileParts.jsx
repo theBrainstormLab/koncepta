@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Icon } from "@iconify-icon/react";
+import { Icon } from "../Icon";
 
 export function Page({ children }) {
   return (

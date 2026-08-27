@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { Icon } from "@iconify-icon/react";
+import { Icon } from "../components/Icon";
 import { supabase } from "../utils/supabase";
 import { fetchCourseByCode } from "../api/courses";
 import { useTitle } from "../utils/useTitle";

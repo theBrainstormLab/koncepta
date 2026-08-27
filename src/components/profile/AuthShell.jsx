@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Icon } from "@iconify-icon/react";
+import { Icon } from "../Icon";
 import { AuthField } from "./ProfileParts";
 import { supabase } from "../../utils/supabase";
 
