@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Icon } from "../components/Icon";
 import { useNavigate } from "react-router-dom";
 import { fetchCourses } from "../api/courses";
 import { useTitle } from "../utils/useTitle";
+import { useDeferredLoad } from "../utils/useDeferredLoad";
 import CardSkeleton from "../components/CardSkeleton";
 import CardGrid from "../components/CardGrid";
 
@@ -15,20 +16,18 @@ export default function Home() {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    async function loadCourses() {
-      try {
-        const data = await fetchCourses();
-        setCourses(data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
+  const loadCourses = async () => {
+    try {
+      const data = await fetchCourses();
+      setCourses(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    loadCourses();
-  }, []);
+  const courseGridRef = useDeferredLoad(loadCourses, []);
 
   return (
     <div className="min-h-[100svh] mt-0 md:mt-10 md:min-h-[calc(100svh-235.9px)]">
@@ -77,15 +76,16 @@ export default function Home() {
           <Icon icon="ri:arrow-down-long-line" />
         </div>
       </div>
-      {loading ? (
-        <CardGrid>
-          {Array.from({ length: 6 }).map((_, i) => (
-            <CardSkeleton key={i} />
-          ))}
-        </CardGrid>
-      ) : (
-        <CardGrid>
-          {courses.map((course) => (
+      <div ref={courseGridRef}>
+        {loading ? (
+          <CardGrid>
+            {Array.from({ length: 6 }).map((_, i) => (
+              <CardSkeleton key={i} />
+            ))}
+          </CardGrid>
+        ) : (
+          <CardGrid>
+            {courses.map((course) => (
             <div
               key={course.id}
               className="border border-[var(--color-border)] rounded-[20px] p-[30px] transition duration-200 ease-in-out cursor-pointer box-border w-full flex flex-col hover:shadow-[var(--shadow-box-hover)] hover:-translate-y-[4px] max-md:p-5 max-[480px]:p-[15px]"
@@ -109,6 +109,7 @@ export default function Home() {
           ))}
         </CardGrid>
       )}
+      </div>
     </div>
   );
 }
