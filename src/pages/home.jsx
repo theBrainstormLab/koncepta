@@ -29,6 +29,15 @@ export default function Home() {
 
   const courseGridRef = useDeferredLoad(loadCourses, []);
 
+  const filtered = courses.filter((c) => {
+    const q = query.trim().toLowerCase();
+    const matchesQuery =
+      !q || c.title.toLowerCase().includes(q) || c.code.toLowerCase().includes(q);
+    const matchesSubject =
+      !subject || (c.degreeName || "").toLowerCase().includes(subject.toLowerCase());
+    return matchesQuery && matchesSubject;
+  });
+
   return (
     <div className="min-h-[100svh] mt-0 md:mt-10 md:min-h-[calc(100svh-235.9px)]">
       <div className="min-h-[100svh] sm:min-h-[100svh] md:min-h-[calc(100svh-200px)] flex flex-col justify-center">
@@ -78,14 +87,18 @@ export default function Home() {
       </div>
       <div ref={courseGridRef}>
         {loading ? (
-          <CardGrid>
+          <CardGrid className="grid grid-cols-1 md:grid-cols-3 gap-6 px-5 py-[50px] md:px-[100px]">
             {Array.from({ length: 6 }).map((_, i) => (
               <CardSkeleton key={i} />
             ))}
           </CardGrid>
+        ) : filtered.length === 0 ? (
+          <p className="py-20 text-center text-[var(--color-text-secondary)]">
+            No courses found{query ? ` for "${query}"` : ""}.
+          </p>
         ) : (
-          <CardGrid>
-            {courses.map((course) => (
+          <CardGrid className="grid grid-cols-1 md:grid-cols-3 gap-6 px-5 py-[50px] md:px-[100px]">
+            {filtered.map((course) => (
             <div
               key={course.id}
               className="border border-[var(--color-border)] rounded-[20px] p-[30px] transition duration-200 ease-in-out cursor-pointer box-border w-full flex flex-col hover:shadow-[var(--shadow-box-hover)] hover:-translate-y-[4px] max-md:p-5 max-[480px]:p-[15px]"
@@ -107,8 +120,8 @@ export default function Home() {
               </div>
             </div>
           ))}
-        </CardGrid>
-      )}
+          </CardGrid>
+        )}
       </div>
     </div>
   );
