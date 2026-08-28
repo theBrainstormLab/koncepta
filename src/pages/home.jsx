@@ -87,7 +87,7 @@ export default function Home() {
       </div>
       <div ref={courseGridRef}>
         {loading ? (
-          <CardGrid className="grid grid-cols-1 md:grid-cols-3 gap-6 px-5 py-[50px] md:px-[100px]">
+          <CardGrid className="grid grid-cols-1 md:grid-cols-3 gap-6 px-5 pt-[50px] pb-[120px] md:px-[100px] md:pb-[180px]">
             {Array.from({ length: 6 }).map((_, i) => (
               <CardSkeleton key={i} />
             ))}
@@ -97,7 +97,7 @@ export default function Home() {
             No courses found{query ? ` for "${query}"` : ""}.
           </p>
         ) : (
-          <CardGrid className="grid grid-cols-1 md:grid-cols-3 gap-6 px-5 py-[50px] md:px-[100px]">
+          <CardGrid className="grid grid-cols-1 md:grid-cols-3 gap-6 px-5 pt-[50px] pb-[120px] md:px-[100px] md:pb-[180px]">
             {filtered.map((course) => (
             <div
               key={course.id}

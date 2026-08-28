@@ -117,7 +117,7 @@ function Modules() {
             ))}
           </CardGrid>
         ) : (
-          <CardGrid className="grid grid-cols-1 md:grid-cols-3 gap-6 px-5 py-[50px] md:px-[100px]">
+          <CardGrid className="grid grid-cols-1 md:grid-cols-3 gap-6 px-5 pt-[50px] pb-[120px] md:px-[100px] md:pb-[180px]">
             {filtered.map((mod) => (
             <div
               key={mod.id}
