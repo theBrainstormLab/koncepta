@@ -301,8 +301,8 @@ export function NotesGrid({ notes, editable, onEditNote, onDeleteNote }) {
   return (
     <div
       className="
-        mt-5 grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-10
-        max-md:gap-6 max-[480px]:grid-cols-1 max-[480px]:gap-4 [&>*]:max-w-[400px]
+        grid grid-cols-1 md:grid-cols-3 gap-6 px-5 pt-[50px] pb-[120px]
+        md:px-[100px] md:pb-[180px]
       "
     >
       {notes.map((note) => (
