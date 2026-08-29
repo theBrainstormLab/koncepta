@@ -114,7 +114,11 @@ export function EditorView({
             disabled:opacity-50
           "
         >
-          {modulesLoading && <option>loading papers...</option>}
+          {modulesLoading && (
+            <option disabled value="">
+              loading papers...
+            </option>
+          )}
 
           {!modulesLoading && courses.length === 0 && (
             <option>no papers available</option>
