@@ -11,6 +11,7 @@ const Modules = lazy(() => import("./pages/modules"));
 const NoteView = lazy(() => import("./pages/NoteView"));
 const About = lazy(() => import("./pages/about"));
 const Profile = lazy(() => import("./pages/Profile"));
+const Papers = lazy(() => import("./pages/Papers"));
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/:username" element={<Profile />} />
+          <Route path="/papers" element={<Papers />} />
         </Routes>
       </Suspense>
       <Footer />

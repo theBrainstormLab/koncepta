@@ -54,10 +54,10 @@ export default function Navbar() {
            </span>
         </button>
         <Link
-          to="/"
+          to="/papers"
           className="text-base md:text-lg md:w-[120px] md:tracking-widest"
         >
-          notes
+          papers
         </Link>
         <Link
           to="/profile"
@@ -119,11 +119,11 @@ export default function Navbar() {
             </span>
           </button>
           <Link
-            to="/"
+            to="/papers"
             className="block text-center px-4 py-5 no-underline text-xl"
             onClick={() => setIsMenuOpen(false)}
           >
-            notes
+            papers
           </Link>
           <Link
             to="/profile"
