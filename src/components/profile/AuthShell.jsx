@@ -90,11 +90,11 @@ export function AuthShell({ isSignUp, setIsSignUp }) {
             wrapperClassName: "relative mt-4",
           },
         ]
-      : []),
+      : [])
   ];
 
   return (
-    <main className="min-h-[calc(100svh-180px)] px-5 py-16 sm:py-20">
+    <main className="flex min-h-[100svh] md:min-h-[calc(100svh-195px)] items-center justify-center px-5 py-16 sm:py-20">
       {message && (
         <div
           className="
