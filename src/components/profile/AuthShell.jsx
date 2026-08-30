@@ -7,6 +7,7 @@ export function AuthShell({ isSignUp, setIsSignUp }) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (!message) return;
@@ -24,13 +25,33 @@ export function AuthShell({ isSignUp, setIsSignUp }) {
 
     const { supabase } = await import("../../utils/supabase");
 
-    if (isSignUp) {
-      if (password !== confirmPassword) {
-        setMessage("Passwords do not match.");
+    try {
+      setSubmitting(true);
+
+      if (isSignUp) {
+        if (password !== confirmPassword) {
+          setMessage("Passwords do not match.");
+          return;
+        }
+
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+        });
+
+        if (error) {
+          console.error(error);
+          setMessage(error.message);
+          return;
+        }
+
+        setMessage(
+          "Confirmation email sent. Check your inbox before signing in.",
+        );
         return;
       }
 
-      const { error } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
@@ -40,22 +61,8 @@ export function AuthShell({ isSignUp, setIsSignUp }) {
         setMessage(error.message);
         return;
       }
-
-      setMessage(
-        "Confirmation email sent. Check your inbox before signing in.",
-      );
-      return;
-    }
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (error) {
-      console.error(error);
-      setMessage(error.message);
-      return;
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -190,6 +197,8 @@ export function AuthShell({ isSignUp, setIsSignUp }) {
 
           <button
             type="submit"
+            disabled={submitting}
+            aria-busy={submitting}
             className="
               group relative mx-auto mt-7 block
               cursor-pointer rounded-[10px] border
@@ -198,10 +207,20 @@ export function AuthShell({ isSignUp, setIsSignUp }) {
               transition
               hover:-translate-y-[2px]
               hover:shadow-[var(--shadow-box-hover)]
+              disabled:cursor-not-allowed disabled:opacity-60
             "
           >
-            {isSignUp ? "sign up" : "sign in"}
-            <span className="ml-2 transition group-hover:ml-3">→</span>
+            {submitting ? (
+              <span className="inline-flex items-center gap-2">
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-[var(--color-border)] border-t-[var(--color-text)]" />
+                {isSignUp ? "signing up..." : "signing in..."}
+              </span>
+            ) : (
+              <>
+                {isSignUp ? "sign up" : "sign in"}
+                <span className="ml-2 transition group-hover:ml-3">→</span>
+              </>
+            )}
           </button>
 
           <p className="mt-5 text-center text-xs text-[var(--color-text-secondary)]">
