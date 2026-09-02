@@ -101,7 +101,7 @@ export default function Navbar() {
                 { type: "theme" },
                 { path: "/notes", label: "notes" },
                 { path: "/profile", label: "profile" },
-              ].map((item, idx) =>
+              ].map((item) =>
                 item.type === "theme" ? (
                   <button
                     key="theme"

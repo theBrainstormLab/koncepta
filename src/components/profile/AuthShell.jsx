@@ -3,8 +3,7 @@ import { Icon } from "../Icon";
 
 export function AuthShell() {
   const [message, setMessage] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-
+  
   useEffect(() => {
     if (!message) return;
 
