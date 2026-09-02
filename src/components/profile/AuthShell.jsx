@@ -3,6 +3,7 @@ import { Icon } from "../Icon";
 
 export function AuthShell() {
   const [message, setMessage] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (!message) return;
@@ -107,6 +108,7 @@ export function AuthShell() {
               transition
               hover:-translate-y-[2px]
               hover:shadow-[var(--shadow-box-hover)]
+              disabled:cursor-not-allowed disabled:opacity-60
             "
           >
             <Icon icon="ri:google-fill" width="20" />

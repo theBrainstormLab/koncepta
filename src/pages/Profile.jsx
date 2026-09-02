@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { SCREENS } from "../utils/profileConstants";
 import { useTitle } from "../utils/useTitle";
 import { AuthShell } from "../components/profile/AuthShell";
+import ProfileSkeleton from "../components/profile/ProfileSkeleton";
 import { EditorView } from "../components/profile/EditorView";
 import { ProfileView } from "../components/profile/ProfileView";
 import { fetchCourses } from "../api/courses";
@@ -280,7 +281,7 @@ export default function Profile() {
     }
   };
 
-  if (loading) return null;
+  if (loading) return <ProfileSkeleton />;
 
   if (username) {
     return (
