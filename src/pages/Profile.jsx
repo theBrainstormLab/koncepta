@@ -110,7 +110,7 @@ export default function Profile() {
 
         const {
           data: { subscription: sub },
-        } = supabase.auth.onAuthStateChange((_event, authSession) => {
+        } = supabase.auth.onAuthStateChange((event, authSession) => {
           if (username) return;
 
           setIsLoggedIn(!!authSession);
@@ -120,6 +120,10 @@ export default function Profile() {
             setNotes([]);
             setScreen(SCREENS.OVERVIEW);
             return;
+          }
+
+          if (window.location.hash) {
+            window.history.replaceState(null, "", window.location.pathname);
           }
 
           void syncLoggedInProfile(authSession.user);
@@ -295,7 +299,7 @@ export default function Profile() {
   }
 
   if (!isLoggedIn) {
-    return <AuthShell isSignUp={isSignUp} setIsSignUp={setIsSignUp} />;
+    return <AuthShell />;
   }
 
   if (screen === SCREENS.EDITOR) {
