@@ -30,7 +30,6 @@ export default function Profile() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [isSignUp, setIsSignUp] = useState(false);
   const [screen, setScreen] = useState(SCREENS.OVERVIEW);
 
   const [profile, setProfile] = useState(null);
