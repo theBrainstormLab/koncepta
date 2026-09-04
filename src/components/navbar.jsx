@@ -41,17 +41,17 @@ export default function Navbar() {
           className="bg-[var(--color-bg-secondary)] w-9 h-9 rounded-[10px] flex items-center justify-center cursor-pointer"
           onClick={() => setDark(!dark)}
         >
-           <span
-             className={`inline-flex transition-transform duration-300 motion-reduce:transition-none ${
-               dark ? "rotate-0" : "rotate-180"
-             }`}
-           >
-             <Icon
-               icon={dark ? "ri:moon-line" : "ri:sun-line"}
-               width="22"
-               height="22"
-             />
-           </span>
+          <span
+            className={`inline-flex transition-transform duration-300 motion-reduce:transition-none ${
+              dark ? "rotate-0" : "rotate-180"
+            }`}
+          >
+            <Icon
+              icon={dark ? "ri:moon-line" : "ri:sun-line"}
+              width="22"
+              height="22"
+            />
+          </span>
         </button>
         <Link
           to="/"
@@ -84,54 +84,69 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="sm:hidden flex flex-col fixed top-0 left-0 right-0 bg-[var(--color-bg)] pt-20 z-[1000] min-h-screen">
-          <Link
-            to="/"
-            className="block text-center px-4 py-5 no-underline text-xl"
+        <div className="sm:hidden fixed inset-0 z-[1000]">
+          <div
+            className="fixed inset-0 bg-black/30 backdrop-blur-[1px]"
             onClick={() => setIsMenuOpen(false)}
-          >
-            home
-          </Link>
-          <Link
-            to="/about"
-            className="block text-center px-4 py-5 no-underline text-xl"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            about
-          </Link>
-          <button
-            type="button"
-            aria-label="Toggle dark mode"
-            aria-pressed={dark}
-            className="flex justify-center items-center bg-[var(--color-bg-secondary)] rounded-[10px] w-9 h-9 mx-auto my-4 cursor-pointer"
-            onClick={() => setDark(!dark)}
-          >
-            <span
-              className={`inline-flex transition-transform duration-300 motion-reduce:transition-none ${
-                dark ? "rotate-0" : "rotate-180"
-              }`}
-            >
-              <Icon
-                icon={dark ? "ri:moon-line" : "ri:sun-line"}
-                width="22"
-                height="22"
-              />
-            </span>
-          </button>
-          <Link
-            to="/"
-            className="block text-center px-4 py-5 no-underline text-xl"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            notes
-          </Link>
-          <Link
-            to="/profile"
-            className="block text-center px-4 py-5 no-underline text-xl"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            profile
-          </Link>
+          />
+          <div className="fixed top-0 right-0 h-screen w-64 p-4 pt-20 flex flex-col bg-[var(--color-bg)]/95 backdrop-blur-xl border-l border-black/5 dark:border-white/10 shadow-2xl transition-all duration-300 animate-in fade-in slide-in-from-right">
+            <nav className="flex flex-col space-y-1 text-sm capitalize font-medium">
+              <span className="text-[11px] font-semibold uppercase tracking-widest opacity-40 px-3 mb-2">
+                Menu
+              </span>
+
+              {[
+                { path: "/", label: "home" },
+                { path: "/about", label: "about" },
+                { type: "theme" },
+                { path: "/notes", label: "notes" },
+                { path: "/profile", label: "profile" },
+              ].map((item) =>
+                item.type === "theme" ? (
+                  <button
+                    key="theme"
+                    type="button"
+                    aria-label="Toggle dark mode"
+                    aria-pressed={dark}
+                    onClick={() => setDark(!dark)}
+                    className="my-1 flex items-center justify-between px-3.5 py-3 rounded-xl cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2.5">
+                      <Icon
+                        icon={dark ? "ri:moon-line" : "ri:sun-line"}
+                        width="18"
+                        height="18"
+                        className={`transition-transform duration-300 ${dark ? "" : "rotate-180"}`}
+                      />
+                      theme
+                    </span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider opacity-70 px-1.5 py-0.5 rounded-md bg-[var(--color-bg)]">
+                      {dark ? "dark" : "light"}
+                    </span>
+                  </button>
+                ) : (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    onClick={() => setIsMenuOpen(false)}
+                    className={`flex items-center justify-between px-3.5 py-3 rounded-xl transition-all ${location.pathname === item.path ? "bg-[var(--color-bg-secondary)] border border-black/5 dark:border-white/20 font-semibold" : "opacity-80 hover:opacity-100 hover:bg-[var(--color-bg-secondary)]"}`}
+                  >
+                    <span>{item.label}</span>
+                    <Icon
+                      icon="ri:arrow-right-s-line"
+                      width="16"
+                      height="16"
+                      className={
+                        location.pathname === item.path
+                          ? "opacity-100"
+                          : "opacity-30"
+                      }
+                    />
+                  </Link>
+                ),
+              )}
+            </nav>
+          </div>
         </div>
       )}
     </div>

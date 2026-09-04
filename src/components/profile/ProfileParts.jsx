@@ -3,7 +3,7 @@ import { Icon } from "../Icon";
 
 export function Page({ children }) {
   return (
-    <main className="min-h-[calc(100svh-180px)] px-4 py-10 sm:px-6 sm:py-12">
+    <main className="min-h-[100svh] md:min-h-[calc(100svh-195px)] px-4 py-10 sm:px-6 sm:py-12">
       <div className="mx-auto max-w-6xl">{children}</div>
     </main>
   );
