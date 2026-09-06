@@ -66,6 +66,7 @@ ${safeContent || "No note content."}
       "Yo bro, I got a bit lost there. Run that by me again?"
     );
   } catch (err) {
+    console.error("Chat error:", err);
     return "My bad dude, hit a quick network hiccup. Try asking again in a sec!";
   }
 }
