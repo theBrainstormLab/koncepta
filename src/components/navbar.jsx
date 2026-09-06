@@ -82,71 +82,73 @@ export default function Navbar() {
         />
       </button>
 
-     {/* Mobile menu */}
-{isMenuOpen && (
-  <div className="sm:hidden fixed inset-0 z-[1000]">
-    <div
-      className="fixed inset-0 bg-black/30 backdrop-blur-[1px]"
-      onClick={() => setIsMenuOpen(false)}
-    />
-    <div className="fixed top-0 right-0 h-screen w-64 p-4 pt-20 flex flex-col justify-between bg-[var(--color-bg)]/95 backdrop-blur-xl border-l border-black/5 dark:border-white/10 shadow-2xl transition-all duration-300 animate-in fade-in slide-in-from-right">
-      {/* Navigation Links */}
-      <nav className="flex flex-col space-y-1 text-sm capitalize font-medium">
-        {[
-          { path: "/", label: "home" },
-          { path: "/about", label: "about" },
-          { path: "/notes", label: "notes" },
-          { path: "/profile", label: "profile" },
-        ].map((item) => (
-          <Link
-            key={item.path}
-            to={item.path}
+      {/* Mobile menu */}
+      {isMenuOpen && (
+        <div className="sm:hidden fixed inset-0 z-[1000]">
+          <div
+            className="fixed inset-0 bg-black/30 backdrop-blur-[1px]"
             onClick={() => setIsMenuOpen(false)}
-            className={`flex items-center justify-between px-3.5 py-3 rounded-xl transition-all ${
-              location.pathname === item.path
-                ? "bg-[var(--color-bg-secondary)] border border-black/5 dark:border-white/20 font-semibold"
-                : "opacity-80 hover:opacity-100 hover:bg-[var(--color-bg-secondary)]"
-            }`}
-          >
-            <span>{item.label}</span>
-            <Icon
-              icon="ri:arrow-right-s-line"
-              width="16"
-              height="16"
-              className={
-                location.pathname === item.path ? "opacity-100" : "opacity-30"
-              }
-            />
-          </Link>
-        ))}
-      </nav>
+          />
+          <div className="fixed top-0 right-0 h-screen w-64 p-4 pt-20 flex flex-col bg-[var(--color-bg)]/95 backdrop-blur-xl border-l border-black/5 dark:border-white/10 shadow-2xl transition-all duration-300 animate-in fade-in slide-in-from-right">
+            {/* Navigation Links */}
+            <nav className="flex flex-col space-y-1 text-sm capitalize font-medium">
+              {[
+                { path: "/", label: "home" },
+                { path: "/about", label: "about" },
+                { path: "/notes", label: "notes" },
+                { path: "/profile", label: "profile" },
+              ].map((item) => (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  onClick={() => setIsMenuOpen(false)}
+                  className={`flex items-center justify-between px-3.5 py-3 rounded-xl transition-all ${
+                    location.pathname === item.path
+                      ? "bg-[var(--color-bg-secondary)] border border-black/5 dark:border-white/20 font-semibold"
+                      : "opacity-80 hover:opacity-100 hover:bg-[var(--color-bg-secondary)]"
+                  }`}
+                >
+                  <span>{item.label}</span>
+                  <Icon
+                    icon="ri:arrow-right-s-line"
+                    width="16"
+                    height="16"
+                    className={
+                      location.pathname === item.path
+                        ? "opacity-100"
+                        : "opacity-30"
+                    }
+                  />
+                </Link>
+              ))}
+            </nav>
 
-      {/* Theme Toggle at the Bottom */}
-      <div className="pt-3 border-t border-black/5 dark:border-white/10">
-        <button
-          type="button"
-          aria-label="Toggle dark mode"
-          aria-pressed={dark}
-          onClick={() => setDark(!dark)}
-          className="w-full flex items-center justify-between px-3.5 py-3 rounded-xl cursor-pointer hover:bg-[var(--color-bg-secondary)] transition-all text-sm capitalize font-medium"
-        >
-          <span className="flex items-center gap-2.5">
-            <Icon
-              icon={dark ? "ri:moon-line" : "ri:sun-line"}
-              width="18"
-              height="18"
-              className={`transition-transform duration-300 ${dark ? "" : "rotate-180"}`}
-            />
-            theme
-          </span>
-          <span className="text-[10px] font-bold uppercase tracking-wider opacity-70 px-1.5 py-0.5 rounded-md bg-[var(--color-bg)]">
-            {dark ? "dark" : "light"}
-          </span>
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+            {/* Theme Button 30px from the bottom */}
+            <div className="absolute bottom-20 left-4 right-4">
+              <button
+                type="button"
+                aria-label="Toggle dark mode"
+                aria-pressed={dark}
+                onClick={() => setDark(!dark)}
+                className="w-full flex items-center justify-between px-3.5 py-3 rounded-xl cursor-pointer hover:bg-[var(--color-bg-secondary)] transition-all text-sm capitalize font-medium"
+              >
+                <span className="flex items-center gap-2.5">
+                  <Icon
+                    icon={dark ? "ri:moon-line" : "ri:sun-line"}
+                    width="18"
+                    height="18"
+                    className={`transition-transform duration-300 ${dark ? "" : "rotate-180"}`}
+                  />
+                  theme
+                </span>
+                <span className="text-[10px] font-bold uppercase tracking-wider opacity-70 px-1.5 py-0.5 rounded-md bg-[var(--color-bg)]">
+                  {dark ? "dark" : "light"}
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
