@@ -9,7 +9,6 @@ import Markdown from "../components/Markdown";
 import NoteViewSkeleton from "../components/NoteViewSkeleton";
 import NotFound from "./NotFound";
 import { askNoteAssistant } from "../api/chat";
-import { RiArrowUpLine } from "react-icons/ri";
 
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -465,9 +464,9 @@ export default function NoteView() {
                   type="submit"
                   disabled={isReplying || !inputMessage.trim()}
                   aria-label="Send message"
-                  className="w-7 h-7 rounded-full bg-[var(--color-bg-secondary)] flex items-center justify-center shrink-0 text-[var(--color-text)] opacity-70 hover:opacity-100 disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer"
+                  className="w-7 h-7 rounded-full bg-[var(--color-bg-secondary)] flex items-center justify-center shrink-0 text-[var(--color-text)] opacity-80 hover:opacity-100 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
                 >
-                  <RiArrowUpLine size={15} />
+                  <Icon icon="ri:arrow-right-up-line" className="w-[15px] h-[15px]" />
                 </button>
               </form>
             </motion.div>
