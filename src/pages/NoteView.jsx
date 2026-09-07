@@ -8,6 +8,7 @@ import { useTitle } from "../utils/useTitle";
 import Markdown from "../components/Markdown";
 import NoteViewSkeleton from "../components/NoteViewSkeleton";
 import NotFound from "./NotFound";
+import { askNoteAssistant } from "../api/chat";
 
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -33,6 +34,15 @@ export default function NoteView() {
 
   const [showOverview, setShowOverview] = useState(!isMobile());
   const [showChat, setShowChat] = useState(!isMobile());
+
+  const [messages, setMessages] = useState([
+    { id: "1", role: "assistant", text: "Okay, what confuses you..?" },
+    { id: "2", role: "user", text: "why is orange orange?" },
+    { id: "3", role: "assistant", text: "i don't know" },
+  ]);
+  const [inputMessage, setInputMessage] = useState("");
+  const [isReplying, setIsReplying] = useState(false);
+  const chatScrollContainerRef = useRef(null);
 
   useEffect(() => {
     if (!moduleId) return;
@@ -60,10 +70,7 @@ export default function NoteView() {
       if (!active) return;
 
       // Module must exist and its course code must match the URL.
-      if (
-        !data ||
-        (data.course?.code ?? "").toLowerCase() !== normalizedCode
-      ) {
+      if (!data || (data.course?.code ?? "").toLowerCase() !== normalizedCode) {
         setNotFound(true);
         return;
       }
@@ -134,18 +141,76 @@ export default function NoteView() {
 
   const toggleOverview = (e) => {
     e.stopPropagation();
-   if (isMobile()) { setShowChat(false);}
+    if (isMobile()) {
+      setShowChat(false);
+    }
     setShowOverview((prev) => !prev);
   };
   const toggleChat = (e) => {
     e.stopPropagation();
-    if (isMobile()) {setShowOverview(false);}
+    if (isMobile()) {
+      setShowOverview(false);
+    }
     setShowChat((prev) => !prev);
   };
   const handleMainContentClick = () => {
     if (isMobile()) {
       setShowOverview(false);
       setShowChat(false);
+    }
+  };
+
+  useEffect(() => {
+    if (showChat && chatScrollContainerRef.current) {
+      chatScrollContainerRef.current.scrollTo({
+        top: chatScrollContainerRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [messages, isReplying, showChat]);
+
+  const handleSendMessage = async (e) => {
+    e.preventDefault();
+    const query = inputMessage.trim();
+    if (!query || isReplying) return;
+
+    // 1. Add user message
+    const userMsg = { id: Date.now().toString(), role: "user", text: query };
+    const nextMessages = [...messages, userMsg];
+    setMessages(nextMessages);
+    setInputMessage("");
+    setIsReplying(true);
+
+    try {
+      // 2. Call askNoteAssistant from chat.js
+      const replyText = await askNoteAssistant({
+        noteContent: selectedNote?.content ?? "",
+        history: messages,
+        question: query,
+      });
+
+      // 3. Add bot reply
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: (Date.now() + 1).toString(),
+          role: "assistant",
+          text: replyText,
+        },
+      ]);
+    } catch (error) {
+      console.error(error);
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: (Date.now() + 1).toString(),
+          role: "assistant",
+          text:
+            error.message || "Something went wrong while fetching the answer.",
+        },
+      ]);
+    } finally {
+      setIsReplying(false);
     }
   };
 
@@ -325,49 +390,85 @@ export default function NoteView() {
               transition={{ duration: 0.3, ease: "easeInOut" }}
               className="flex flex-col gap-6 mt-6 bg-[var(--color-bg-secondary)] rounded-[16px] p-3 overflow-hidden"
             >
-              <div className="flex items-center gap-2" style={{ width: 256 }}>
-                <div className="bg-[var(--color-bg)] w-7 h-7 rounded-full flex items-center justify-center shrink-0">
-                  <Icon icon="ri:robot-2-line" width="15" height="15" />
-                </div>
-                <div className="min-w-0">
-                  <div className="bg-[var(--color-bg)] rounded-2xl rounded-bl-none px-3 py-2 text-[12px] tracking-[0.03em]">
-                    Okay, what confuses you..?
-                  </div>
-                </div>
-              </div>
+              {/* Message Scroll Container */}
               <div
-                className="flex items-center gap-2 justify-end"
+                ref={chatScrollContainerRef}
+                className="flex flex-col gap-6 max-h-[350px] overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
                 style={{ width: 256 }}
               >
-                <div className="min-w-0 text-right">
-                  <div className="bg-[var(--color-bg)] rounded-2xl rounded-br-none px-3 py-2 text-[12px] tracking-[0.03em]">
-                    why is orange orange?
+                {messages.map((msg) =>
+                  msg.role === "assistant" ? (
+                    <div
+                      key={msg.id}
+                      className="flex items-center gap-2"
+                      style={{ width: 256 }}
+                    >
+                      <div className="bg-[var(--color-bg)] w-7 h-7 rounded-full flex items-center justify-center shrink-0">
+                        <Icon icon="ri:robot-2-line" width="15" height="15" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="bg-[var(--color-bg)] rounded-2xl rounded-bl-none px-3 py-2 text-[12px] tracking-[0.03em] break-words leading-relaxed">
+                          {msg.text}
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      key={msg.id}
+                      className="flex items-center gap-2 justify-end"
+                      style={{ width: 256 }}
+                    >
+                      <div className="min-w-0 text-right">
+                        <div className="bg-[var(--color-bg)] rounded-2xl rounded-br-none px-3 py-2 text-[12px] tracking-[0.03em] break-words leading-relaxed">
+                          {msg.text}
+                        </div>
+                      </div>
+                      <div className="bg-[var(--color-bg)] w-7 h-7 rounded-full flex items-center justify-center shrink-0">
+                        <Icon icon="ri:user-line" width="15" height="15" />
+                      </div>
+                    </div>
+                  ),
+                )}
+
+                {isReplying && (
+                  <div
+                    className="flex items-center gap-2"
+                    style={{ width: 256 }}
+                  >
+                    <div className="bg-[var(--color-bg)] w-7 h-7 rounded-full flex items-center justify-center shrink-0">
+                      <Icon icon="ri:robot-2-line" width="15" height="15" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="bg-[var(--color-bg)] rounded-2xl rounded-bl-none px-3 py-2 text-[12px] tracking-[0.03em] opacity-60">
+                        ...
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <div className="bg-[var(--color-bg)] w-7 h-7 rounded-full flex items-center justify-center shrink-0">
-                  <Icon icon="ri:user-line" width="15" height="15" />
-                </div>
+                )}
               </div>
-              <div className="flex items-center gap-2" style={{ width: 256 }}>
-                <div className="bg-[var(--color-bg)] w-7 h-7 rounded-full flex items-center justify-center shrink-0">
-                  <Icon icon="ri:robot-2-line" width="15" height="15" />
-                </div>
-                <div className="min-w-0">
-                  <div className="bg-[var(--color-bg)] rounded-2xl rounded-bl-none px-3 py-2 text-[12px] tracking-[0.03em]">
-                    i don't know
-                  </div>
-                </div>
-              </div>
-              <div
-                className="bg-[var(--color-bg)] rounded-[12px] px-4 py-3"
+
+              <form
+                onSubmit={handleSendMessage}
+                className="bg-[var(--color-bg)] rounded-[12px] px-3 py-2 flex items-center gap-2"
                 style={{ width: 256 }}
               >
                 <input
                   type="text"
+                  value={inputMessage}
+                  onChange={(e) => setInputMessage(e.target.value)}
                   placeholder="what's bugging you..?"
-                  className="w-full bg-transparent text-[12px] tracking-[0.03em] placeholder-[var(--color-text-placeholder)] outline-none"
+                  disabled={isReplying}
+                  className="flex-1 bg-transparent text-[12px] tracking-[0.03em] placeholder-[var(--color-text-placeholder)] outline-none disabled:opacity-50 min-w-0"
                 />
-              </div>
+                <button
+                  type="submit"
+                  disabled={isReplying || !inputMessage.trim()}
+                  aria-label="Send message"
+                  className="w-7 h-7 rounded-full bg-[var(--color-bg-secondary)] flex items-center justify-center shrink-0 text-[var(--color-text)] opacity-80 hover:opacity-100 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
+                >
+                  <Icon icon="ri:arrow-right-up-line" className="w-[15px] h-[15px]" />
+                </button>
+              </form>
             </motion.div>
           )}
         </AnimatePresence>
